@@ -5,9 +5,9 @@ Name: Paul Davis
 EID: pad789
 Email: pauldavis95@hotmail.com
 
-Name: 
-EID: 
-Email:
+Name: Kyle Sotengco
+EID: kes3627
+Email: ksotengco@gmail.com
 
 Time to complete project: 
 Comments:
