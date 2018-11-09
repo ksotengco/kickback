@@ -49,6 +49,7 @@ public class SignUp extends Fragment {
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if (task.isSuccessful()) {
                                     Log.d(TAG, "onComplete: " + "SUCCEEDED");
+                                    MainActivity.startApptivity();
                                 } else {
                                     Log.d(TAG, "onComplete: " + "FAILED");
                                 }
