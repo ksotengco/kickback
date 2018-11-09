@@ -1,25 +1,22 @@
-package edu.cs371m.kickback;
+package edu.cs371m.kickback.page;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 
 import com.firebase.ui.auth.AuthUI;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.Arrays;
 import java.util.List;
+
+import edu.cs371m.kickback.R;
+import edu.cs371m.kickback.activity.MainActivity;
 
 public class LandingPage extends Fragment {
 
@@ -70,7 +67,7 @@ public class LandingPage extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == RC_SIGN_IN) {
-            MainActivity.startApptivity();
+            ((MainActivity)getActivity()).startApptivity();
         }
     }
 }

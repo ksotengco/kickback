@@ -1,6 +1,5 @@
-package edu.cs371m.kickback;
+package edu.cs371m.kickback.page;
 
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,12 +10,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+
+import edu.cs371m.kickback.R;
+import edu.cs371m.kickback.activity.MainActivity;
 
 public class SignUp extends Fragment {
 
@@ -49,7 +50,7 @@ public class SignUp extends Fragment {
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if (task.isSuccessful()) {
                                     Log.d(TAG, "onComplete: " + "SUCCEEDED");
-                                    MainActivity.startApptivity();
+                                    ((MainActivity)getActivity()).startApptivity();
                                 } else {
                                     Log.d(TAG, "onComplete: " + "FAILED");
                                 }
