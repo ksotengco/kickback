@@ -1,32 +1,28 @@
-package edu.cs371m.kickback;
+package edu.cs371m.kickback.activity;
 
-import android.app.FragmentManager;
-import android.arch.lifecycle.Lifecycle;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import edu.cs371m.kickback.page.LandingPage;
+import edu.cs371m.kickback.R;
+
 public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth userAuth;
-    private static Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        context = getApplicationContext();
 
         userAuth = FirebaseAuth.getInstance();
-        userAuth.signOut();
         FirebaseUser currentUser = userAuth.getCurrentUser();
 
         if (currentUser != null) {
@@ -39,8 +35,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public static void startApptivity() {
-        Intent startApp = new Intent(context, Appitivty.class);
-        context.startActivity(startApp);
+    public void startApptivity() {
+        Intent startApp = new Intent(this, Appitivty.class);
+        startActivity(startApp);
+        Log.d("MAIN", "startApptivity: ");
+        finish();
     }
 }
