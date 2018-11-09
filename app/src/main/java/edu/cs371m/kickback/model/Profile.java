@@ -1,6 +1,8 @@
 package edu.cs371m.kickback.model;
 
 import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -37,38 +39,14 @@ public class Profile {
         this.firstName = logInfo.getString("firstName");
         this.lastName  = logInfo.getString("lastName");
 
+        //this.profilePicture = new Photo();
+
         this.hosting = new ArrayList<String>();
         this.attending = new ArrayList<String>();
         this.invites = new ArrayList<String>();
 
         totalRating = 0;
         reviewCount = 0;
-    }
-
-    public static void addProfile(FirebaseUser profile, Bundle logInfo) {
-        Profile newProfile = new Profile(profile, logInfo);
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-        db.collection("profiles")
-                .add(newProfile)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        Log.d("Creating Profile...", "Success!");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d("Creating Profile...", e.getMessage());
-                    }
-                });
-    }
-
-    public static Profile getProfile(String uID) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-        return null;
     }
 
     public String getFirstName() {
