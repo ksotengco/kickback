@@ -1,23 +1,29 @@
 package edu.cs371m.kickback.page;
 
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import edu.cs371m.kickback.R;
 import edu.cs371m.kickback.activity.MainActivity;
+import edu.cs371m.kickback.model.Profile;
 
 public class SignUp extends Fragment {
 
@@ -44,18 +50,29 @@ public class SignUp extends Fragment {
         signUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                userAuth.createUserWithEmailAndPassword(emailEdit.getText().toString(), passwordEdit.getText().toString())
-                        .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                if (task.isSuccessful()) {
-                                    Log.d(TAG, "onComplete: " + "SUCCEEDED");
-                                    ((MainActivity)getActivity()).startApptivity();
-                                } else {
-                                    Log.d(TAG, "onComplete: " + "FAILED");
+                if (TextUtils.isEmpty(firstNameEdit.getText().toString()) ||
+                        TextUtils.isEmpty(lastNameEdit.getText().toString())) {
+                    Toast.makeText(view.getContext(), "Please enter in your first and last name", Toast.LENGTH_SHORT).show();
+                } else {
+
+                    userAuth.createUserWithEmailAndPassword(emailEdit.getText().toString(), passwordEdit.getText().toString())
+                            .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    if (task.isSuccessful()) {
+                                        Log.d(TAG, "onComplete: " + "SUCCEEDED");
+                                        Bundle logInfo = new Bundle();
+                                        logInfo.putString("firstName", firstNameEdit.getText().toString());
+                                        logInfo.putString("lastName", lastNameEdit.getText().toString());
+
+                                        Profile.addProfile(FirebaseAuth.getInstance().getCurrentUser(), logInfo);
+                                        ((MainActivity) getActivity()).startApptivity();
+                                    } else {
+                                        Log.d(TAG, "onComplete: " + "FAILED");
+                                    }
                                 }
-                            }
-                        });
+                            });
+                }
             }
         });
 
