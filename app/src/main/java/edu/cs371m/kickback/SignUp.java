@@ -35,8 +35,10 @@ public class SignUp extends Fragment {
         View v = inflater.inflate(R.layout.sign_up, container, false);
         firstNameEdit = v.findViewById(R.id.editFirstName);
         lastNameEdit = v.findViewById(R.id.editLastName);
+
         emailEdit = v.findViewById(R.id.editEmail);
         passwordEdit = v.findViewById(R.id.editPassword);
+
         signUpButton = v.findViewById(R.id.confirmButton);
         signUpButton.setOnClickListener(new View.OnClickListener() {
             @Override

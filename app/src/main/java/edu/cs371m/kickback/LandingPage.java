@@ -11,16 +11,21 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class LandingPage extends Fragment {
 
     private Button signUpButton;
     private Button signInButton;
     private final String TAG = "LANDING_PAGE_FRAG";
+    final int RC_SIGN_IN = 1;
 
     // ADAPTED FROM FC3
     @Nullable
@@ -29,6 +34,8 @@ public class LandingPage extends Fragment {
         View v = inflater.inflate(R.layout.landing_page, container, false);
 
         signUpButton = v.findViewById(R.id.signUpButton);
+        signInButton = v.findViewById(R.id.signInButton);
+
         signUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -36,6 +43,22 @@ public class LandingPage extends Fragment {
                         .replace(R.id.main_fragment, new SignUp())
                         .addToBackStack(null)
                         .commit();
+            }
+        });
+
+        // Adapted from FC6
+        signInButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                List<AuthUI.IdpConfig> providers = Arrays.asList(
+                        new AuthUI.IdpConfig.EmailBuilder().build());
+
+                // Create and launch sign-in intent
+                startActivity(
+                        AuthUI.getInstance()
+                                .createSignInIntentBuilder()
+                                .setAvailableProviders(providers)
+                                .build());
             }
         });
 

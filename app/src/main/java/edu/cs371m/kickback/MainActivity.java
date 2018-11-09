@@ -24,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (currentUser != null) {
             // redirect to home page
+
         } else {
             getSupportFragmentManager().beginTransaction()
                                        .add(R.id.main_fragment, new LandingPage(), "LANDING_PAGE")
