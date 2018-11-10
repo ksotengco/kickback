@@ -15,6 +15,7 @@ import edu.cs371m.kickback.model.Profile;
 import edu.cs371m.kickback.page.LandingPage;
 import edu.cs371m.kickback.R;
 
+// callback for getting and adding profile
 interface waitForProfile {
     void onProfileReady(Profile profile);
 }
@@ -35,7 +36,6 @@ public class MainActivity extends AppCompatActivity
         if (currentUser != null) {
             // redirect to home page
             Database.getInstance().getProfile(this, currentUser.getUid());
-            //startApptivity();
         } else {
             getSupportFragmentManager().beginTransaction()
                                        .add(R.id.main_fragment, new LandingPage(), "LANDING_PAGE")
@@ -43,10 +43,12 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    // redirects to home page
     public void startApptivity(Profile profile) {
         Intent startApp = new Intent(this, Appitivty.class);
         Bundle profileInfo = new Bundle();
 
+        // the current profile in use; send to new activity
         profileInfo.putParcelable("profile", profile);
         startApp.putExtras(profileInfo);
 

@@ -42,8 +42,23 @@ public class Profile implements Parcelable {
 
     // default no-argument constructor; apparently it's needed or else failure
     public Profile() {}
-    public Profile(String id) {
-        // query DB for certain user information
+
+    // creating a new user, populating it with email, name, id
+    public Profile(FirebaseUser profile, Bundle logInfo) {
+        this.id = profile.getUid();
+        this.email = profile.getEmail();
+
+        this.firstName = logInfo.getString("firstName");
+        this.lastName  = logInfo.getString("lastName");
+
+        //this.profilePicture = new Photo();
+
+        this.hosting = new ArrayList<String>();
+        this.attending = new ArrayList<String>();
+        this.invites = new ArrayList<String>();
+
+        totalRating = 0;
+        reviewCount = 0;
     }
 
     public Profile(Parcel parcel) {
@@ -87,27 +102,11 @@ public class Profile implements Parcelable {
         return 0;
     }
 
-    public Profile(FirebaseUser profile, Bundle logInfo) {
-        this.id = profile.getUid();
-        this.email = profile.getEmail();
 
-        this.firstName = logInfo.getString("firstName");
-        this.lastName  = logInfo.getString("lastName");
-
-        //this.profilePicture = new Photo();
-
-        this.hosting = new ArrayList<String>();
-        this.attending = new ArrayList<String>();
-        this.invites = new ArrayList<String>();
-
-        totalRating = 0;
-        reviewCount = 0;
-    }
-
+    // all the getters for database population (I assume)
     public String getFirstName() {
         return firstName;
     }
-
     public String getLastName() {
         return lastName;
     }
@@ -115,7 +114,6 @@ public class Profile implements Parcelable {
     public String getId() {
         return id;
     }
-
     public String getEmail() {
         return email;
     }
@@ -127,11 +125,9 @@ public class Profile implements Parcelable {
     public ArrayList<String> getHosting() {
         return hosting;
     }
-
     public ArrayList<String> getAttending() {
         return attending;
     }
-
     public ArrayList<String> getInvites() {
         return invites;
     }
@@ -139,7 +135,6 @@ public class Profile implements Parcelable {
     public int getTotalRating() {
         return totalRating;
     }
-
     public int getReviewCount() {
         return reviewCount;
     }

@@ -35,7 +35,8 @@ public class Appitivty extends AppCompatActivity {
         mainNav = findViewById(R.id.mainNav);
 
         currentProfile = getIntent().getExtras().getParcelable("profile");
-        Log.d("Appitivity", "Profile: " + currentProfile.getFirstName());
+
+        //Log.d("Appitivity", "Profile: " + currentProfile.getFirstName());
 
         mainNav.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override

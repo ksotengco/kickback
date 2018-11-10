@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import edu.cs371m.kickback.R;
 import edu.cs371m.kickback.activity.Appitivty;
@@ -23,7 +24,14 @@ public class HomePage extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.home_page, container, false);
 
-        //((Appitivty)(getActivity())).getCurrentProfile();
+        // Purely for test purposes; delete later
+        // ----------------------------------------------------------------------------
+        String name = ((Appitivty)(getActivity())).getCurrentProfile().getFirstName() + " " +
+                ((Appitivty)(getActivity())).getCurrentProfile().getLastName();
+
+        TextView tv = v.findViewById(R.id.username_text);
+        tv.setText(name);
+        // ----------------------------------------------------------------------------
 
         hostButton = v.findViewById(R.id.hostShortcut);
         hostButton.setOnClickListener(new View.OnClickListener() {
