@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import edu.cs371m.kickback.R;
+import edu.cs371m.kickback.activity.Appitivty;
 
 public class HomePage extends Fragment {
 
@@ -21,6 +22,8 @@ public class HomePage extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.home_page, container, false);
+
+        //((Appitivty)(getActivity())).getCurrentProfile();
 
         hostButton = v.findViewById(R.id.hostShortcut);
         hostButton.setOnClickListener(new View.OnClickListener() {

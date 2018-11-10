@@ -68,8 +68,10 @@ public class SignUp extends Fragment {
                                         logInfo.putString("firstName", firstNameEdit.getText().toString());
                                         logInfo.putString("lastName", lastNameEdit.getText().toString());
 
-                                        Profile user = Database.getInstance().addProfile(FirebaseAuth.getInstance().getCurrentUser(), logInfo);
-                                        ((MainActivity) getActivity()).startApptivity();
+                                        Database.getInstance().addProfile((MainActivity) getActivity(),
+                                                FirebaseAuth.getInstance().getCurrentUser(), logInfo);
+
+                                        //((MainActivity) getActivity()).startApptivity();
                                     } else {
                                         Log.d(TAG, "onComplete: " + "FAILED");
                                     }
