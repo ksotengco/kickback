@@ -28,6 +28,8 @@ public class Profile {
     private int totalRating;
     private int reviewCount;
 
+    public Profile() {}
+
     // creating a new user, populating it with email, name, id
     public Profile(FirebaseUser profile, Bundle logInfo) {
         this.id = profile.getUid();

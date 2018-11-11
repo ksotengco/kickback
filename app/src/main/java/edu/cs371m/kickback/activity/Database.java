@@ -13,40 +13,47 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import edu.cs371m.kickback.model.Event;
 import edu.cs371m.kickback.model.Profile;
 
 public class Database {
     private final FirebaseFirestore db;
 
     private static final Database ourInstance = new Database();
+    private static WaitForDataQuery callback;
 
     public static Database getInstance() {
         return ourInstance;
     }
 
-    private Database() { db = FirebaseFirestore.getInstance(); }
-
-    public void addProfile(final waitForProfile callback, FirebaseUser profile, Bundle logInfo) {
-        final Profile newProfile = new Profile(profile, logInfo);
-
-        db.collection("profiles")
-                .add(newProfile)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        Log.d("Creating Profile...", "Success!");
-                        callback.onProfileReady(newProfile);
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d("Creating Profile...", e.getMessage());
-                    }
-                });
+    public static void setCallback(WaitForDataQuery dataCallback) {
+        callback = dataCallback;
     }
 
-    public void getProfile(final waitForProfile callback, String uID) {
+    private Database() { db = FirebaseFirestore.getInstance(); }
+
+    public void addProfile(FirebaseUser profile, Bundle logInfo) {
+        final Profile newProfile = new Profile(profile, logInfo);
+        Map<String, Object> dataMap = new HashMap<>();
+        dataMap.put(profile.getUid(), newProfile);
+        db.collection("profiles").document(profile.getUid()).set(newProfile)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        callback.onProfileReady(newProfile);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d("ADD PROFILE", "onFailure: " + e.toString());
+                    }
+                 });
+    }
+
+    public void getProfile(String uID) {
         db.collection("profiles")
                 .whereEqualTo("id", uID)
                 .get()
@@ -56,6 +63,17 @@ public class Database {
                         callback.onProfileReady(queryDocumentSnapshots.toObjects(Profile.class).get(0));
                     }
                 });
+    }
 
+    public void addEvent(final Event newEvent) {
+        db.collection("events")
+                .document(newEvent.getEventId())
+                .set(newEvent)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        callback.onEventReady(newEvent);
+                    }
+                });
     }
 }

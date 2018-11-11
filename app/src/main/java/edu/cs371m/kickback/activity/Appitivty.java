@@ -14,15 +14,17 @@ import android.view.MenuItem;
 import com.google.firebase.auth.FirebaseAuth;
 
 import edu.cs371m.kickback.R;
+import edu.cs371m.kickback.model.Event;
 import edu.cs371m.kickback.model.Profile;
 import edu.cs371m.kickback.page.HomePage;
 
 // callback for getting and adding profile
-interface waitForProfile {
+interface WaitForDataQuery {
     void onProfileReady(Profile profile);
+    void onEventReady(Event event);
 }
 
-public class Appitivty extends AppCompatActivity implements waitForProfile {
+public class Appitivty extends AppCompatActivity implements WaitForDataQuery {
 
     private DrawerLayout drawerLayout;
     private NavigationView mainNav;
@@ -38,14 +40,15 @@ public class Appitivty extends AppCompatActivity implements waitForProfile {
 
         drawerLayout = findViewById(R.id.drawerLayout);
         mainNav = findViewById(R.id.mainNav);
+        Database.setCallback(this);
 
         Intent caller = getIntent();
         Bundle logInfo = caller.getBundleExtra("info");
 
         if (logInfo != null) {
-            Database.getInstance().addProfile(this, FirebaseAuth.getInstance().getCurrentUser(), logInfo);
+            Database.getInstance().addProfile(FirebaseAuth.getInstance().getCurrentUser(), logInfo);
         } else {
-            Database.getInstance().getProfile(this, FirebaseAuth.getInstance().getCurrentUser().getUid());
+            Database.getInstance().getProfile(FirebaseAuth.getInstance().getCurrentUser().getUid());
         }
 
         //Log.d("Appitivity", "Profile: " + currentProfile.getFirstName());
@@ -77,5 +80,10 @@ public class Appitivty extends AppCompatActivity implements waitForProfile {
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.app_fragment, new HomePage(), "HOME_PAGE")
                 .commit();
+    }
+
+    @Override
+    public void onEventReady(Event event) {
+
     }
 }
