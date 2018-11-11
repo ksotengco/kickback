@@ -17,11 +17,16 @@ import edu.cs371m.kickback.R;
 import edu.cs371m.kickback.model.Profile;
 import edu.cs371m.kickback.page.HomePage;
 
-public class Appitivty extends AppCompatActivity {
+// callback for getting and adding profile
+interface waitForProfile {
+    void onProfileReady(Profile profile);
+}
+
+public class Appitivty extends AppCompatActivity implements waitForProfile {
 
     private DrawerLayout drawerLayout;
     private NavigationView mainNav;
-    private Profile currentProfile;
+    private static Profile currentProfile;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -34,7 +39,14 @@ public class Appitivty extends AppCompatActivity {
         drawerLayout = findViewById(R.id.drawerLayout);
         mainNav = findViewById(R.id.mainNav);
 
-        currentProfile = getIntent().getExtras().getParcelable("profile");
+        Intent caller = getIntent();
+        Bundle logInfo = caller.getBundleExtra("info");
+
+        if (logInfo != null) {
+            Database.getInstance().addProfile(this, FirebaseAuth.getInstance().getCurrentUser(), logInfo);
+        } else {
+            Database.getInstance().getProfile(this, FirebaseAuth.getInstance().getCurrentUser().getUid());
+        }
 
         //Log.d("Appitivity", "Profile: " + currentProfile.getFirstName());
 
@@ -53,13 +65,17 @@ public class Appitivty extends AppCompatActivity {
         });
 
         // Get user info from database and store the user in Auth instance?
-
-        getSupportFragmentManager().beginTransaction()
-                                    .add(R.id.app_fragment, new HomePage(), "HOME_PAGE")
-                                    .commit();
     }
 
-    public Profile getCurrentProfile() {
+    public static Profile getCurrentProfile() {
         return currentProfile;
+    }
+
+    @Override
+    public void onProfileReady(Profile profile) {
+        currentProfile = profile;
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.app_fragment, new HomePage(), "HOME_PAGE")
+                .commit();
     }
 }

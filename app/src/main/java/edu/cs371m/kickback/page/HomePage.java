@@ -26,8 +26,7 @@ public class HomePage extends Fragment {
 
         // Purely for test purposes; delete later
         // ----------------------------------------------------------------------------
-        String name = ((Appitivty)(getActivity())).getCurrentProfile().getFirstName() + " " +
-                ((Appitivty)(getActivity())).getCurrentProfile().getLastName();
+        String name = Appitivty.getCurrentProfile().getFirstName() + " " + Appitivty.getCurrentProfile().getLastName();
 
         TextView tv = v.findViewById(R.id.username_text);
         tv.setText(name);

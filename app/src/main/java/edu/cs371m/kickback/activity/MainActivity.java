@@ -15,13 +15,7 @@ import edu.cs371m.kickback.model.Profile;
 import edu.cs371m.kickback.page.LandingPage;
 import edu.cs371m.kickback.R;
 
-// callback for getting and adding profile
-interface waitForProfile {
-    void onProfileReady(Profile profile);
-}
-
-public class MainActivity extends AppCompatActivity
-                          implements waitForProfile {
+public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth userAuth;
 
@@ -35,7 +29,7 @@ public class MainActivity extends AppCompatActivity
 
         if (currentUser != null) {
             // redirect to home page
-            Database.getInstance().getProfile(this, currentUser.getUid());
+            startApptivity(null);
         } else {
             getSupportFragmentManager().beginTransaction()
                                        .add(R.id.main_fragment, new LandingPage(), "LANDING_PAGE")
@@ -44,22 +38,16 @@ public class MainActivity extends AppCompatActivity
     }
 
     // redirects to home page
-    public void startApptivity(Profile profile) {
+    public void startApptivity(Bundle info) {
         Intent startApp = new Intent(this, Appitivty.class);
-        Bundle profileInfo = new Bundle();
 
-        // the current profile in use; send to new activity
-        profileInfo.putParcelable("profile", profile);
-        startApp.putExtras(profileInfo);
+        if (info != null) {
+            startApp.putExtra("info", info);
+        }
 
         startActivity(startApp);
 
         Log.d("MAIN", "startApptivity: ");
         finish();
-    }
-
-    @Override
-    public void onProfileReady(Profile profile) {
-        startApptivity(profile);
     }
 }

@@ -80,7 +80,7 @@ public class LandingPage extends Fragment {
                 // Successfully signed in
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                 if (user != null) {
-                    Database.getInstance().getProfile((MainActivity) getActivity(), user.getUid());
+                    ((MainActivity)getActivity()).startApptivity(null);
                 }
             }
         }
