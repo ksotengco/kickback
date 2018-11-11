@@ -14,7 +14,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
-public class Profile implements Parcelable {
+public class Profile {
     private String firstName;
     private String lastName;
     private String id;
@@ -27,21 +27,6 @@ public class Profile implements Parcelable {
 
     private int totalRating;
     private int reviewCount;
-
-    // http://www.vogella.com/tutorials/AndroidParcelable/article.html
-    // WITCHEL also might be from a flipped class but I don't remember exact one
-    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
-        public Profile createFromParcel(Parcel in) {
-            return new Profile(in);
-        }
-
-        public Profile[] newArray (int size) {
-            return new Profile[size];
-        }
-    };
-
-    // default no-argument constructor; apparently it's needed or else failure
-    public Profile() {}
 
     // creating a new user, populating it with email, name, id
     public Profile(FirebaseUser profile, Bundle logInfo) {
@@ -59,47 +44,6 @@ public class Profile implements Parcelable {
 
         totalRating = 0;
         reviewCount = 0;
-    }
-
-    public Profile(Parcel parcel) {
-        this.firstName = parcel.readString();
-        this.lastName = parcel.readString();
-        this.id = parcel.readString();
-        this.email = parcel.readString();
-
-        // TODO: figure out how to put Photo object in a Parcel
-
-        parcel.readList(this.hosting, null);
-        parcel.readList(this.attending, null);
-        parcel.readList(this.invites, null);
-
-        this.totalRating = parcel.readInt();
-        this.reviewCount = parcel.readInt();
-    }
-
-    // turns data into parcel for parcelables
-    // Note: I feel like I saw this in a FC but I don't remember where
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(this.firstName);
-        parcel.writeString(this.lastName);
-        parcel.writeString(this.id);
-        parcel.writeString(this.email);
-
-        // TODO: figure out how to put Photo object in a Parcel
-
-        parcel.writeList(this.hosting);
-        parcel.writeList(this.attending);
-        parcel.writeList(this.invites);
-
-        parcel.writeInt(totalRating);
-        parcel.writeInt(reviewCount);
-    }
-
-    // using default from Docs
-    @Override
-    public int describeContents() {
-        return 0;
     }
 
 
