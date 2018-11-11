@@ -22,6 +22,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import edu.cs371m.kickback.R;
+import edu.cs371m.kickback.activity.Database;
 import edu.cs371m.kickback.activity.MainActivity;
 import edu.cs371m.kickback.model.Profile;
 
@@ -50,6 +51,8 @@ public class SignUp extends Fragment {
         signUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                // quick error checking, probably gonna change later
                 if (TextUtils.isEmpty(firstNameEdit.getText().toString()) ||
                         TextUtils.isEmpty(lastNameEdit.getText().toString())) {
                     Toast.makeText(view.getContext(), "Please enter in your first and last name", Toast.LENGTH_SHORT).show();
@@ -65,8 +68,10 @@ public class SignUp extends Fragment {
                                         logInfo.putString("firstName", firstNameEdit.getText().toString());
                                         logInfo.putString("lastName", lastNameEdit.getText().toString());
 
-                                        Profile.addProfile(FirebaseAuth.getInstance().getCurrentUser(), logInfo);
-                                        ((MainActivity) getActivity()).startApptivity();
+                                        Database.getInstance().addProfile((MainActivity) getActivity(),
+                                                FirebaseAuth.getInstance().getCurrentUser(), logInfo);
+
+                                        //((MainActivity) getActivity()).startApptivity();
                                     } else {
                                         Log.d(TAG, "onComplete: " + "FAILED");
                                     }

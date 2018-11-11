@@ -8,17 +8,20 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 
 import com.google.firebase.auth.FirebaseAuth;
 
 import edu.cs371m.kickback.R;
+import edu.cs371m.kickback.model.Profile;
 import edu.cs371m.kickback.page.HomePage;
 
 public class Appitivty extends AppCompatActivity {
 
     private DrawerLayout drawerLayout;
     private NavigationView mainNav;
+    private Profile currentProfile;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -30,6 +33,11 @@ public class Appitivty extends AppCompatActivity {
 
         drawerLayout = findViewById(R.id.drawerLayout);
         mainNav = findViewById(R.id.mainNav);
+
+        currentProfile = getIntent().getExtras().getParcelable("profile");
+
+        //Log.d("Appitivity", "Profile: " + currentProfile.getFirstName());
+
         mainNav.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -49,5 +57,9 @@ public class Appitivty extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction()
                                     .add(R.id.app_fragment, new HomePage(), "HOME_PAGE")
                                     .commit();
+    }
+
+    public Profile getCurrentProfile() {
+        return currentProfile;
     }
 }

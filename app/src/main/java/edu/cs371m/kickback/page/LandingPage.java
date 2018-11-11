@@ -11,12 +11,18 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.firebase.ui.auth.AuthUI;
+import com.firebase.ui.auth.IdpResponse;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Arrays;
 import java.util.List;
 
 import edu.cs371m.kickback.R;
+import edu.cs371m.kickback.activity.Database;
 import edu.cs371m.kickback.activity.MainActivity;
+
+import static android.app.Activity.RESULT_OK;
 
 public class LandingPage extends Fragment {
 
@@ -62,12 +68,21 @@ public class LandingPage extends Fragment {
         return v;
     }
 
+    // WITCHEL Adapted from FC6
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == RC_SIGN_IN) {
-            ((MainActivity)getActivity()).startApptivity();
+            IdpResponse response = IdpResponse.fromResultIntent(data);
+
+            if (resultCode == RESULT_OK) {
+                // Successfully signed in
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                if (user != null) {
+                    Database.getInstance().getProfile((MainActivity) getActivity(), user.getUid());
+                }
+            }
         }
     }
 }

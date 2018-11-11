@@ -1,6 +1,8 @@
 package edu.cs371m.kickback.model;
 
 import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -12,7 +14,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
-public class Profile {
+public class Profile implements Parcelable {
     private String firstName;
     private String lastName;
     private String id;
@@ -26,16 +28,30 @@ public class Profile {
     private int totalRating;
     private int reviewCount;
 
-    public Profile(String id) {
-        // query DB for certain user information
-    }
+    // http://www.vogella.com/tutorials/AndroidParcelable/article.html
+    // WITCHEL also might be from a flipped class but I don't remember exact one
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+        public Profile createFromParcel(Parcel in) {
+            return new Profile(in);
+        }
 
+        public Profile[] newArray (int size) {
+            return new Profile[size];
+        }
+    };
+
+    // default no-argument constructor; apparently it's needed or else failure
+    public Profile() {}
+
+    // creating a new user, populating it with email, name, id
     public Profile(FirebaseUser profile, Bundle logInfo) {
         this.id = profile.getUid();
         this.email = profile.getEmail();
 
         this.firstName = logInfo.getString("firstName");
         this.lastName  = logInfo.getString("lastName");
+
+        //this.profilePicture = new Photo();
 
         this.hosting = new ArrayList<String>();
         this.attending = new ArrayList<String>();
@@ -45,36 +61,52 @@ public class Profile {
         reviewCount = 0;
     }
 
-    public static void addProfile(FirebaseUser profile, Bundle logInfo) {
-        Profile newProfile = new Profile(profile, logInfo);
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
+    public Profile(Parcel parcel) {
+        this.firstName = parcel.readString();
+        this.lastName = parcel.readString();
+        this.id = parcel.readString();
+        this.email = parcel.readString();
 
-        db.collection("profiles")
-                .add(newProfile)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        Log.d("Creating Profile...", "Success!");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d("Creating Profile...", e.getMessage());
-                    }
-                });
+        // TODO: figure out how to put Photo object in a Parcel
+
+        parcel.readList(this.hosting, null);
+        parcel.readList(this.attending, null);
+        parcel.readList(this.invites, null);
+
+        this.totalRating = parcel.readInt();
+        this.reviewCount = parcel.readInt();
     }
 
-    public static Profile getProfile(String uID) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
+    // turns data into parcel for parcelables
+    // Note: I feel like I saw this in a FC but I don't remember where
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(this.firstName);
+        parcel.writeString(this.lastName);
+        parcel.writeString(this.id);
+        parcel.writeString(this.email);
 
-        return null;
+        // TODO: figure out how to put Photo object in a Parcel
+
+        parcel.writeList(this.hosting);
+        parcel.writeList(this.attending);
+        parcel.writeList(this.invites);
+
+        parcel.writeInt(totalRating);
+        parcel.writeInt(reviewCount);
     }
 
+    // using default from Docs
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+
+    // all the getters for database population (I assume)
     public String getFirstName() {
         return firstName;
     }
-
     public String getLastName() {
         return lastName;
     }
@@ -82,7 +114,6 @@ public class Profile {
     public String getId() {
         return id;
     }
-
     public String getEmail() {
         return email;
     }
@@ -94,11 +125,9 @@ public class Profile {
     public ArrayList<String> getHosting() {
         return hosting;
     }
-
     public ArrayList<String> getAttending() {
         return attending;
     }
-
     public ArrayList<String> getInvites() {
         return invites;
     }
@@ -106,7 +135,6 @@ public class Profile {
     public int getTotalRating() {
         return totalRating;
     }
-
     public int getReviewCount() {
         return reviewCount;
     }
