@@ -84,6 +84,7 @@ public class Appitivty extends AppCompatActivity implements WaitForDataQuery {
 
     @Override
     public void onEventReady(Event event) {
-
+        Log.d("EVENT READY", "onEventReady: " + event.getDescription());
+        // TODO: update profiles with pendings
     }
 }

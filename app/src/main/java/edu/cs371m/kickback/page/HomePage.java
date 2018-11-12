@@ -36,7 +36,10 @@ public class HomePage extends Fragment {
         hostButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .addToBackStack(null)
+                        .replace(R.id.app_fragment, new CreateEvent())
+                        .commit();
             }
         });
 

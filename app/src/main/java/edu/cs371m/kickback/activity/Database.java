@@ -20,7 +20,7 @@ import edu.cs371m.kickback.model.Event;
 import edu.cs371m.kickback.model.Profile;
 
 public class Database {
-    private final FirebaseFirestore db;
+    public final FirebaseFirestore db;
 
     private static final Database ourInstance = new Database();
     private static WaitForDataQuery callback;

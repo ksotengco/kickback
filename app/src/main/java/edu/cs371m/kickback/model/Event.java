@@ -18,6 +18,8 @@ public class Event {
     private ArrayList<String> pending;
     private ArrayList<String> comments;
 
+    public Event() {}
+
     public Event(Bundle eventInfo) {
         this.eventName = eventInfo.getString("eventName");
         this.description = eventInfo.getString("description");
