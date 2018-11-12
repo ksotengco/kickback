@@ -48,7 +48,6 @@ public class Profile {
         reviewCount = 0;
     }
 
-
     // all the getters for database population (I assume)
     public String getFirstName() {
         return firstName;

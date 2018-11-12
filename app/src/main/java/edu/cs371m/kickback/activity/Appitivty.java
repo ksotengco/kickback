@@ -11,7 +11,13 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.HashMap;
 
 import edu.cs371m.kickback.R;
 import edu.cs371m.kickback.model.Event;
@@ -83,8 +89,14 @@ public class Appitivty extends AppCompatActivity implements WaitForDataQuery {
     }
 
     @Override
-    public void onEventReady(Event event) {
+    public void onEventReady(final Event event) {
         Log.d("EVENT READY", "onEventReady: " + event.getDescription());
-        // TODO: update profiles with pendings
+        for (String id : event.getPending()) {
+            Database.getInstance().db
+                    .collection("profiles")
+                    .document(id)
+                    .update("invites", FieldValue.arrayUnion(event.getEventId()));
+
+        }
     }
 }
