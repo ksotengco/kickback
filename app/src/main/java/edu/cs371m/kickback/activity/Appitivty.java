@@ -91,14 +91,19 @@ public class Appitivty extends AppCompatActivity implements WaitForDataQuery {
     public void onProfileReady(Profile profile) {
         currentProfile = profile;
 
-        Database.getInstance().db.collection("invites").addSnapshotListener(new EventListener<QuerySnapshot>() {
+        // TODO: figure out notifications
+        Database.getInstance().db.collection("profiles").document(profile.getId()).collection("invites").addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@javax.annotation.Nullable QuerySnapshot queryDocumentSnapshots, @javax.annotation.Nullable FirebaseFirestoreException e) {
                 if (queryDocumentSnapshots != null) {
                     List<DocumentChange> inviteChanges = queryDocumentSnapshots.getDocumentChanges();
+                    Map<String, Object> viewedMap;
+
                     for (DocumentChange d : inviteChanges) {
-                        if (d.getType() == DocumentChange.Type.ADDED) {
-                            Log.d("DocumentChanges", "this happens");
+                        viewedMap = d.getDocument().getData();
+
+                        if (d.getType() == DocumentChange.Type.ADDED && viewedMap.get("viewed").equals(false)) {
+                            Log.d("DocumentChange2", d.getDocument().getId());
                         }
                     }
                 }

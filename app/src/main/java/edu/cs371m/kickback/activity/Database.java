@@ -60,6 +60,8 @@ public class Database {
                             Log.d("onComplete", "happens");
                             Map<String, Object> tempMap = new HashMap<String, Object>();
                             tempMap.put("viewed", true);
+                            tempMap.put("marked", false);
+
                             db.collection("profiles").document(profile.getUid())
                                     .collection("invites")
                                     .document("dummy")
@@ -83,6 +85,8 @@ public class Database {
     public void addInvite (String uID, String eventID) {
         Map<String, Object> tempMap = new HashMap<String, Object>();
         tempMap.put("viewed", false);
+        tempMap.put("marked", false);
+
         db.collection("profiles/" + uID + "/invites")
                 .document(eventID)
                 .set(tempMap);
