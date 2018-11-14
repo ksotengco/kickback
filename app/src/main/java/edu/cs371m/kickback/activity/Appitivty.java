@@ -92,11 +92,7 @@ public class Appitivty extends AppCompatActivity implements WaitForDataQuery {
     public void onEventReady(final Event event) {
         Log.d("EVENT READY", "onEventReady: " + event.getDescription());
         for (String id : event.getPending()) {
-            Database.getInstance().db
-                    .collection("profiles")
-                    .document(id)
-                    .update("invites", FieldValue.arrayUnion(event.getEventId()));
-
+            Database.getInstance().addInvite(id, event.getEventId());
         }
     }
 }

@@ -21,9 +21,6 @@ public class Profile {
     private String email;
 
     private Photo profilePicture;
-    private ArrayList<String> hosting;
-    private ArrayList<String> attending;
-    private ArrayList<String> invites;
 
     private int totalRating;
     private int reviewCount;
@@ -39,10 +36,6 @@ public class Profile {
         this.lastName  = logInfo.getString("lastName");
 
         //this.profilePicture = new Photo();
-
-        this.hosting = new ArrayList<String>();
-        this.attending = new ArrayList<String>();
-        this.invites = new ArrayList<String>();
 
         totalRating = 0;
         reviewCount = 0;
@@ -65,16 +58,6 @@ public class Profile {
 
     public Photo getProfilePicture() {
         return profilePicture;
-    }
-
-    public ArrayList<String> getHosting() {
-        return hosting;
-    }
-    public ArrayList<String> getAttending() {
-        return attending;
-    }
-    public ArrayList<String> getInvites() {
-        return invites;
     }
 
     public int getTotalRating() {

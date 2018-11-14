@@ -4,20 +4,27 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import javax.annotation.Nullable;
 
 import edu.cs371m.kickback.model.Event;
 import edu.cs371m.kickback.model.Profile;
@@ -38,22 +45,47 @@ public class Database {
 
     private Database() { db = FirebaseFirestore.getInstance(); }
 
-    public void addProfile(FirebaseUser profile, Bundle logInfo) {
+    public void addProfile(final FirebaseUser profile, Bundle logInfo) {
         final Profile newProfile = new Profile(profile, logInfo);
         Map<String, Object> dataMap = new HashMap<>();
         dataMap.put(profile.getUid(), newProfile);
-        db.collection("profiles").document(profile.getUid()).set(newProfile)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
+
+        final DocumentReference docRef = db.collection("profiles").document(profile.getUid());
+
+        docRef.set(newProfile)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
-                    public void onSuccess(Void aVoid) {
-                        callback.onProfileReady(newProfile);
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Log.d("onComplete", "happens");
+                            Map<String, Object> tempMap = new HashMap<String, Object>();
+                            tempMap.put("dummy", Integer.valueOf(3));
+                            db.collection("profiles").document(profile.getUid()).collection("invites").document("dummy");
+                            //docRef.collection("invites").document();
+                            docRef.collection("invites").addSnapshotListener(new EventListener<QuerySnapshot>() {
+                                @Override
+                                public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                                    List<DocumentChange> inviteChanges = queryDocumentSnapshots.getDocumentChanges();
+                                    for (DocumentChange d : inviteChanges) {
+                                        if (d.getType() == DocumentChange.Type.ADDED) {
+                                            Log.d("DocumentChanges", "this happens");
+                                        }
+                                    }
+                                }
+                            });
+
+                            callback.onProfileReady(newProfile);
+                        } else {
+                            Log.d("ADD PROFILE", "onFailure: " + task.getException().getMessage());
+                        }
                     }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d("ADD PROFILE", "onFailure: " + e.toString());
-                    }
-                 });
+                });
+
+    }
+
+    public void addInvite (String uID, String eventID) {
+        db.collection("profiles/" + uID + "/invites")
+                .document(eventID);
     }
 
     public void getProfile(String uID) {
