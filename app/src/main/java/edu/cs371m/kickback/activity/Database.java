@@ -59,22 +59,19 @@ public class Database {
                         if (task.isSuccessful()) {
                             Log.d("onComplete", "happens");
                             Map<String, Object> tempMap = new HashMap<String, Object>();
-                            tempMap.put("dummy", Integer.valueOf(3));
-                            db.collection("profiles").document(profile.getUid()).collection("invites").document("dummy");
-                            //docRef.collection("invites").document();
-                            docRef.collection("invites").addSnapshotListener(new EventListener<QuerySnapshot>() {
-                                @Override
-                                public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                                    List<DocumentChange> inviteChanges = queryDocumentSnapshots.getDocumentChanges();
-                                    for (DocumentChange d : inviteChanges) {
-                                        if (d.getType() == DocumentChange.Type.ADDED) {
-                                            Log.d("DocumentChanges", "this happens");
+                            tempMap.put("viewed", true);
+                            db.collection("profiles").document(profile.getUid())
+                                    .collection("invites")
+                                    .document("dummy")
+                                    .set(tempMap)
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()) {
+                                                callback.onProfileReady(newProfile);
+                                            }
                                         }
-                                    }
-                                }
-                            });
-
-                            callback.onProfileReady(newProfile);
+                                    });
                         } else {
                             Log.d("ADD PROFILE", "onFailure: " + task.getException().getMessage());
                         }
@@ -84,8 +81,11 @@ public class Database {
     }
 
     public void addInvite (String uID, String eventID) {
+        Map<String, Object> tempMap = new HashMap<String, Object>();
+        tempMap.put("viewed", false);
         db.collection("profiles/" + uID + "/invites")
-                .document(eventID);
+                .document(eventID)
+                .set(tempMap);
     }
 
     public void getProfile(String uID) {

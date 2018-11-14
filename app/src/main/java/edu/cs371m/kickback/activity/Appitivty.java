@@ -2,6 +2,7 @@ package edu.cs371m.kickback.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
@@ -13,11 +14,17 @@ import android.view.MenuItem;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import edu.cs371m.kickback.R;
 import edu.cs371m.kickback.model.Event;
@@ -83,6 +90,21 @@ public class Appitivty extends AppCompatActivity implements WaitForDataQuery {
     @Override
     public void onProfileReady(Profile profile) {
         currentProfile = profile;
+
+        Database.getInstance().db.collection("invites").addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@javax.annotation.Nullable QuerySnapshot queryDocumentSnapshots, @javax.annotation.Nullable FirebaseFirestoreException e) {
+                if (queryDocumentSnapshots != null) {
+                    List<DocumentChange> inviteChanges = queryDocumentSnapshots.getDocumentChanges();
+                    for (DocumentChange d : inviteChanges) {
+                        if (d.getType() == DocumentChange.Type.ADDED) {
+                            Log.d("DocumentChanges", "this happens");
+                        }
+                    }
+                }
+            }
+        });
+
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.app_fragment, new HomePage(), "HOME_PAGE")
                 .commit();
