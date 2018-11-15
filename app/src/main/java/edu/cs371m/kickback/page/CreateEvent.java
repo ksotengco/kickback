@@ -20,7 +20,9 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 
 import edu.cs371m.kickback.R;
+import edu.cs371m.kickback.activity.Appitivty;
 import edu.cs371m.kickback.activity.Database;
+import edu.cs371m.kickback.activity.MainActivity;
 import edu.cs371m.kickback.model.Event;
 import edu.cs371m.kickback.model.Profile;
 
@@ -79,6 +81,7 @@ public class CreateEvent extends Fragment {
                     eventInfo.putString("eventName", editEventName.getText().toString());
                     eventInfo.putString("description", editDescription.getText().toString());
                     eventInfo.putString("hostId", FirebaseAuth.getInstance().getCurrentUser().getUid());
+                    eventInfo.putString("hostName", Appitivty.getCurrentProfile().getFirstName() + " " + Appitivty.getCurrentProfile().getLastName());
                     eventInfo.putStringArrayList("pending", pending);
 
                     Event newEvent = new Event(eventInfo);

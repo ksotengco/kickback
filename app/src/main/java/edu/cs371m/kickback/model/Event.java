@@ -8,6 +8,7 @@ import java.util.UUID;
 public class Event {
 
     private String eventName;
+    private String hostName;
     private String description;
     private String hostId;
     private String eventId;
@@ -25,6 +26,7 @@ public class Event {
         this.eventName = eventInfo.getString("eventName");
         this.description = eventInfo.getString("description");
         this.hostId = eventInfo.getString("hostId");
+        this.hostName = eventInfo.getString("hostName");
         this.eventId = UUID.randomUUID().toString();
         this.photoId = null; // TODO: change this
 
@@ -55,6 +57,10 @@ public class Event {
 
     public String getEventName() {
         return eventName;
+    }
+
+    public String getHostName() {
+        return hostName;
     }
 
     public String getHostId() {
