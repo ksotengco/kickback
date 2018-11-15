@@ -14,6 +14,7 @@ import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
@@ -34,6 +35,11 @@ public class Database {
 
     private static final Database ourInstance = new Database();
     private static WaitForDataQuery callback;
+
+    public enum EventUpdates {
+        ACCEPTED,
+        DECLINED
+    }
 
     public static Database getInstance() {
         return ourInstance;
@@ -92,6 +98,12 @@ public class Database {
                 .set(tempMap);
     }
 
+    public void removeInvite (String uID, String eventID) {
+        db.collection("profiles/" + uID + "/invites")
+                .document(eventID)
+                .delete();
+    }
+
     public void getProfile(String uID) {
         db.collection("profiles")
                 .whereEqualTo("id", uID)
@@ -114,5 +126,22 @@ public class Database {
                         callback.onEventReady(newEvent);
                     }
                 });
+    }
+
+    public void updateEvent (String eventID, EventUpdates update) {
+        db.collection("events")
+                .document(eventID)
+                .update("pending",
+                        FieldValue.arrayRemove(FirebaseAuth.getInstance().getCurrentUser().getUid()));
+
+        removeInvite(FirebaseAuth.getInstance().getCurrentUser().getUid(), eventID);
+
+        if (update == EventUpdates.ACCEPTED) {
+            db.collection("events")
+                    .document(eventID)
+                    .update("attendees",
+                            FieldValue.arrayUnion(FirebaseAuth.getInstance().getCurrentUser().getUid()));
+        }
+
     }
 }

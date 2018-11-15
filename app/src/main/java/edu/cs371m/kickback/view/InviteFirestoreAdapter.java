@@ -15,6 +15,7 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 
 import edu.cs371m.kickback.R;
+import edu.cs371m.kickback.activity.Database;
 import edu.cs371m.kickback.model.Event;
 import edu.cs371m.kickback.model.Invite;
 
@@ -57,7 +58,8 @@ public class InviteFirestoreAdapter extends FirestoreRecyclerAdapter<Event, Invi
         holder.accept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(view.getContext(), "Accepted", Toast.LENGTH_SHORT).show();
+                Toast.makeText(view.getContext(), "Accepted " + model.getEventName(), Toast.LENGTH_SHORT).show();
+                Database.getInstance().updateEvent(model.getEventId(), Database.EventUpdates.ACCEPTED);
             }
         });
 
@@ -65,6 +67,7 @@ public class InviteFirestoreAdapter extends FirestoreRecyclerAdapter<Event, Invi
             @Override
             public void onClick(View view) {
                 Toast.makeText(view.getContext(), "Declined", Toast.LENGTH_SHORT).show();
+                Database.getInstance().updateEvent(model.getEventId(), Database.EventUpdates.DECLINED);
             }
         });
     }
