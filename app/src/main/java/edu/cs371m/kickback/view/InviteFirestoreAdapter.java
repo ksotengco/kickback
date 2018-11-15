@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 
 import edu.cs371m.kickback.R;
@@ -52,6 +53,8 @@ public class InviteFirestoreAdapter extends FirestoreRecyclerAdapter<Event, Invi
             @Override
             public void onClick(View view) {
                 Toast.makeText(view.getContext(), model.getEventName(), Toast.LENGTH_SHORT).show();
+                Database.getInstance().viewInvite(FirebaseAuth.getInstance().getCurrentUser().getUid(),
+                        model.getEventId());
             }
         });
 
@@ -59,7 +62,7 @@ public class InviteFirestoreAdapter extends FirestoreRecyclerAdapter<Event, Invi
             @Override
             public void onClick(View view) {
                 Toast.makeText(view.getContext(), "Accepted " + model.getEventName(), Toast.LENGTH_SHORT).show();
-                Database.getInstance().updateEvent(model.getEventId(), Database.EventUpdates.ACCEPTED);
+                Database.getInstance().inviteAccept(model.getEventId(), Database.EventUpdates.ACCEPTED);
             }
         });
 
@@ -67,7 +70,7 @@ public class InviteFirestoreAdapter extends FirestoreRecyclerAdapter<Event, Invi
             @Override
             public void onClick(View view) {
                 Toast.makeText(view.getContext(), "Declined", Toast.LENGTH_SHORT).show();
-                Database.getInstance().updateEvent(model.getEventId(), Database.EventUpdates.DECLINED);
+                Database.getInstance().inviteAccept(model.getEventId(), Database.EventUpdates.DECLINED);
             }
         });
     }

@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -105,12 +106,19 @@ public class Appitivty extends AppCompatActivity implements WaitForDataQuery {
                     List<DocumentChange> inviteChanges = queryDocumentSnapshots.getDocumentChanges();
                     Map<String, Object> viewedMap;
 
+                    int numInvites = 0;
                     for (DocumentChange d : inviteChanges) {
                         viewedMap = d.getDocument().getData();
 
                         if (d.getType() == DocumentChange.Type.ADDED && viewedMap.get("viewed").equals(false)) {
                             Log.d("DocumentChange2", d.getDocument().getId());
+                            ++numInvites;
                         }
+                    }
+
+                    if (numInvites > 0) {
+                        Toast.makeText(getApplicationContext(), "You have " + numInvites + " unread invites!",
+                                Toast.LENGTH_SHORT).show();
                     }
                 }
             }

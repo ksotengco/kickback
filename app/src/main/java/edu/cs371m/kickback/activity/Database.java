@@ -88,22 +88,6 @@ public class Database {
 
     }
 
-    public void addInvite (String uID, String eventID) {
-        Map<String, Object> tempMap = new HashMap<String, Object>();
-        tempMap.put("viewed", false);
-        tempMap.put("marked", false);
-
-        db.collection("profiles/" + uID + "/invites")
-                .document(eventID)
-                .set(tempMap);
-    }
-
-    public void removeInvite (String uID, String eventID) {
-        db.collection("profiles/" + uID + "/invites")
-                .document(eventID)
-                .delete();
-    }
-
     public void getProfile(String uID) {
         db.collection("profiles")
                 .whereEqualTo("id", uID)
@@ -128,7 +112,29 @@ public class Database {
                 });
     }
 
-    public void updateEvent (String eventID, EventUpdates update) {
+    public void addInvite (String uID, String eventID) {
+        Map<String, Object> tempMap = new HashMap<String, Object>();
+        tempMap.put("viewed", false);
+        tempMap.put("marked", false);
+
+        db.collection("profiles/" + uID + "/invites")
+                .document(eventID)
+                .set(tempMap);
+    }
+
+    public void viewInvite (String uID, String eventID) {
+        db.collection("profiles/" + uID + "/invites")
+                .document(eventID)
+                .update("viewed", true);
+    }
+
+    public void removeInvite (String uID, String eventID) {
+        db.collection("profiles/" + uID + "/invites")
+                .document(eventID)
+                .delete();
+    }
+
+    public void inviteAccept (String eventID, EventUpdates update) {
         db.collection("events")
                 .document(eventID)
                 .update("pending",
