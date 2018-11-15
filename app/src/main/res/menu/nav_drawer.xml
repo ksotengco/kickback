@@ -2,12 +2,18 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_logout"
+            android:id="@+id/nav_home"
             android:icon="@drawable/common_google_signin_btn_icon_dark"
-            android:title="Logout" />
+            android:checked="true"
+            android:title="Home" />
         <item
             android:id="@+id/nav_invites"
             android:icon="@drawable/common_google_signin_btn_icon_dark"
             android:title="Invites" />
+        <item
+            android:id="@+id/nav_logout"
+            android:icon="@drawable/common_google_signin_btn_icon_dark"
+            android:title="Logout" />
+
     </group>
 </menu>

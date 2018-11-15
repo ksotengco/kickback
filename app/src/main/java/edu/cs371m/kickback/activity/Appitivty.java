@@ -31,6 +31,7 @@ import edu.cs371m.kickback.R;
 import edu.cs371m.kickback.model.Event;
 import edu.cs371m.kickback.model.Profile;
 import edu.cs371m.kickback.page.EventInvites;
+import edu.cs371m.kickback.page.EventPage;
 import edu.cs371m.kickback.page.HomePage;
 
 // callback for getting and adding profile
@@ -71,18 +72,28 @@ public class Appitivty extends AppCompatActivity implements WaitForDataQuery {
         mainNav.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                if (item.getItemId() == R.id.nav_logout) {
-                    FirebaseAuth.getInstance().signOut();
-                    Intent signOutIntent = new Intent(getApplicationContext(), MainActivity.class);
-                    startActivity(signOutIntent);
-                    finish();
-                    return true;
-                } else if (item.getItemId() == R.id.nav_invites) {
-                    getSupportFragmentManager()
-                            .beginTransaction()
-                            .replace(R.id.app_fragment, new EventInvites())
-                            .commit();
+                drawerLayout.closeDrawers();
+                switch (item.getItemId()) {
+                    case R.id.nav_home:
+                        getSupportFragmentManager()
+                                .beginTransaction()
+                                .replace(R.id.app_fragment, new HomePage())
+                                .commit();
+                        return true;
+                    case R.id.nav_invites:
+                        getSupportFragmentManager()
+                                .beginTransaction()
+                                .replace(R.id.app_fragment, new EventInvites())
+                                .commit();
+                        return true;
+                    case R.id.nav_logout:
+                        FirebaseAuth.getInstance().signOut();
+                        Intent signOutIntent = new Intent(getApplicationContext(), MainActivity.class);
+                        startActivity(signOutIntent);
+                        finish();
+                        return true;
                 }
+
                 return false;
             }
         });
@@ -135,5 +146,20 @@ public class Appitivty extends AppCompatActivity implements WaitForDataQuery {
         for (String id : event.getPending()) {
             Database.getInstance().addInvite(id, event.getEventId());
         }
+
+        Bundle eventInfo = new Bundle();
+        eventInfo.putString("host_name", event.getHostName());
+        eventInfo.putString("event_name", event.getEventName());
+        eventInfo.putString("event_desc", event.getDescription());
+
+        EventPage goToEvent = new EventPage();
+        goToEvent.setArguments(eventInfo);
+
+        getSupportFragmentManager().popBackStack();
+
+        getSupportFragmentManager().beginTransaction()
+                .addToBackStack(null)
+                .replace(R.id.app_fragment, goToEvent)
+                .commit();
     }
 }
