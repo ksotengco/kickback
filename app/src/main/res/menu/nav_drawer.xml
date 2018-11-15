@@ -5,5 +5,9 @@
             android:id="@+id/nav_logout"
             android:icon="@drawable/common_google_signin_btn_icon_dark"
             android:title="Logout" />
+        <item
+            android:id="@+id/nav_invites"
+            android:icon="@drawable/common_google_signin_btn_icon_dark"
+            android:title="Invites" />
     </group>
 </menu>

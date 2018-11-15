@@ -13,6 +13,7 @@ public class Event {
     private String eventId;
     private String photoId;
     // TODO: Add time/date and location
+    // TODO: ADd creation timestamp
 
     private ArrayList<String> attendees;
     private ArrayList<String> pending;
@@ -62,5 +63,10 @@ public class Event {
 
     public String getPhotoId() {
         return photoId;
+    }
+
+    public String toString() {
+        String result = "Name: " + getEventName();
+        return result;
     }
 }

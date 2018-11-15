@@ -29,6 +29,7 @@ import java.util.Map;
 import edu.cs371m.kickback.R;
 import edu.cs371m.kickback.model.Event;
 import edu.cs371m.kickback.model.Profile;
+import edu.cs371m.kickback.page.EventInvites;
 import edu.cs371m.kickback.page.HomePage;
 
 // callback for getting and adding profile
@@ -75,6 +76,11 @@ public class Appitivty extends AppCompatActivity implements WaitForDataQuery {
                     startActivity(signOutIntent);
                     finish();
                     return true;
+                } else if (item.getItemId() == R.id.nav_invites) {
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.app_fragment, new EventInvites())
+                            .commit();
                 }
                 return false;
             }
