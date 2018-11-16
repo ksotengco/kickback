@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         userAuth = FirebaseAuth.getInstance();
-        //userAuth.signOut();
+        userAuth.signOut();
         FirebaseUser currentUser = userAuth.getCurrentUser();
 
         if (currentUser != null) {
@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
         if (info != null) {
             startApp.putExtra("info", info);
         }
-
+        
         startActivity(startApp);
 
         Log.d("MAIN", "startApptivity: ");
