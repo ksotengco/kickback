@@ -8,12 +8,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 
 import edu.cs371m.kickback.R;
+import edu.cs371m.kickback.activity.Database;
 import edu.cs371m.kickback.model.Event;
 import edu.cs371m.kickback.model.Invite;
 
@@ -41,15 +44,39 @@ public class InviteFirestoreAdapter extends FirestoreRecyclerAdapter<Event, Invi
     }
 
     @Override
-    public void onBindViewHolder(@NonNull InviteViewHolder holder, int position, @NonNull Event model) {
+    public void onBindViewHolder(@NonNull InviteViewHolder holder, int position, @NonNull final Event model) {
         Log.d("BIND", "onBindViewHolder: " + model.getEventName());
         holder.eventName.setText(model.getEventName());
-        holder.hostName.setText(model.getHostId());
+        holder.hostName.setText(model.getHostName());
         // TODO: Make buttons do stuff
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(view.getContext(), model.getEventName(), Toast.LENGTH_SHORT).show();
+                Database.getInstance().viewInvite(FirebaseAuth.getInstance().getCurrentUser().getUid(),
+                        model.getEventId());
+            }
+        });
+
+        holder.accept.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(view.getContext(), "Accepted " + model.getEventName(), Toast.LENGTH_SHORT).show();
+                Database.getInstance().inviteAccept(model.getEventId(), Database.EventUpdates.ACCEPTED);
+            }
+        });
+
+        holder.decline.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(view.getContext(), "Declined", Toast.LENGTH_SHORT).show();
+                Database.getInstance().inviteAccept(model.getEventId(), Database.EventUpdates.DECLINED);
+            }
+        });
     }
 
     @Override
-    public InviteViewHolder onCreateViewHolder(ViewGroup group, int i) {
+    public InviteViewHolder onCreateViewHolder(@NonNull ViewGroup group, int i) {
         Log.d("create holder", "onCreateViewHolder: " + i);
         // Create a new instance of the ViewHolder, in this case we are using a custom
         // layout called R.layout.message for each item
