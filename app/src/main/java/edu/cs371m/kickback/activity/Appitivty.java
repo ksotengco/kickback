@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -46,6 +47,9 @@ public class Appitivty extends AppCompatActivity implements WaitForDataQuery {
     private NavigationView mainNav;
     private static Profile currentProfile;
 
+    private boolean isNotificationsInit;
+    private int numInvites;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         // Create activity, toolbar, and inflate layout
@@ -53,6 +57,9 @@ public class Appitivty extends AppCompatActivity implements WaitForDataQuery {
         setContentView(R.layout.apptivity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
+
+        isNotificationsInit = false;
+        numInvites = 0;
 
         drawerLayout = findViewById(R.id.drawerLayout);
         mainNav = findViewById(R.id.mainNav);
@@ -113,23 +120,30 @@ public class Appitivty extends AppCompatActivity implements WaitForDataQuery {
         Database.getInstance().db.collection("profiles").document(profile.getId()).collection("invites").addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@javax.annotation.Nullable QuerySnapshot queryDocumentSnapshots, @javax.annotation.Nullable FirebaseFirestoreException e) {
+                Log.d("onEvent", "Snapshot listener called");
                 if (queryDocumentSnapshots != null) {
+                    Log.d("notification", "change noticed");
                     List<DocumentChange> inviteChanges = queryDocumentSnapshots.getDocumentChanges();
                     Map<String, Object> viewedMap;
 
-                    int numInvites = 0;
+                    // TODO: change from toast to visual cue
                     for (DocumentChange d : inviteChanges) {
                         viewedMap = d.getDocument().getData();
 
                         if (d.getType() == DocumentChange.Type.ADDED && viewedMap.get("viewed").equals(false)) {
-                            Log.d("DocumentChange2", d.getDocument().getId());
+                            Log.d("DocumentChange", "Added");
                             ++numInvites;
-                        }
-                    }
 
-                    if (numInvites > 0) {
-                        Toast.makeText(getApplicationContext(), "You have " + numInvites + " unread invites!",
-                                Toast.LENGTH_SHORT).show();
+                            if (numInvites > 0 && isNotificationsInit) {
+                                Toast.makeText(getApplicationContext(), "You have " + numInvites + " unread invites!",
+                                        Toast.LENGTH_SHORT).show();
+                            } else {
+                                isNotificationsInit = true;
+                            }
+                        } else if (d.getType() == DocumentChange.Type.REMOVED) {
+                            Log.d("DocumentChange", "Removed");
+                            --numInvites;
+                        }
                     }
                 }
             }
