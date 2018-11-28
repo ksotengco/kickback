@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
         if (info != null) {
             startApp.putExtra("info", info);
         }
-
+        
         startActivity(startApp);
 
         Log.d("MAIN", "startApptivity: ");
