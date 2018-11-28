@@ -42,10 +42,16 @@ public class Appitivty extends AppCompatActivity implements OnAddEventListener, 
         mainNav = findViewById(R.id.mainNav);
 
         Intent caller = getIntent();
-        Bundle logInfo = caller.getBundleExtra("info");
+        Bundle userInfo = caller.getBundleExtra("userInfo");
 
-        if (logInfo != null) {
-            Database.getInstance().addProfile(FirebaseAuth.getInstance().getCurrentUser(), logInfo, this);
+        if (userInfo != null) {
+            Profile newProfile = new Profile(
+                    userInfo.getString("id"),
+                    userInfo.getString("email"),
+                    userInfo.getString("firstName"),
+                    userInfo.getString("lastName"));
+
+            Database.getInstance().addProfile(newProfile, this);
         } else {
             Database.getInstance().getProfile(FirebaseAuth.getInstance().getCurrentUser().getUid(), this);
         }

@@ -39,11 +39,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // redirects to home page
-    public void startApptivity(Bundle info) {
+    public void startApptivity(Bundle userInfo) {
         Intent startApp = new Intent(this, Appitivty.class);
 
-        if (info != null) {
-            startApp.putExtra("info", info);
+        if (userInfo != null) {
+            startApp.putExtra("userInfo", userInfo);
         }
         
         startActivity(startApp);

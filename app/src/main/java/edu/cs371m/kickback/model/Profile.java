@@ -27,15 +27,11 @@ public class Profile {
 
     public Profile() {}
 
-    // creating a new user, populating it with email, name, id
-    public Profile(FirebaseUser profile, Bundle logInfo) {
-        this.id = profile.getUid();
-        this.email = profile.getEmail();
-
-        this.firstName = logInfo.getString("firstName");
-        this.lastName  = logInfo.getString("lastName");
-
-        //this.profilePicture = new Photo();
+    public Profile(String id, String email, String firstName, String lastName) {
+        this.id = id;
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
 
         totalRating = 0;
         reviewCount = 0;

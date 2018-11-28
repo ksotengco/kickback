@@ -41,14 +41,10 @@ public class Database {
         return database;
     }
 
-    public void addProfile(final FirebaseUser profile, Bundle logInfo, final OnAddProfileListener callback) {
-        final Profile newProfile = new Profile(profile, logInfo);
-        Map<String, Object> dataMap = new HashMap<>();
-        dataMap.put(profile.getUid(), newProfile);
-
-        final DocumentReference docRef = db.collection("profiles").document(profile.getUid());
-
-        docRef.set(newProfile)
+    public void addProfile(final Profile newProfile, final OnAddProfileListener callback) {
+        db.collection("profiles")
+                .document(newProfile.getId())
+                .set(newProfile)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
@@ -59,7 +55,6 @@ public class Database {
                         }
                     }
                 });
-
     }
 
     public void getProfile(String uID, final OnGetProfileListener callback) {
