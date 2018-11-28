@@ -109,32 +109,6 @@ public class Appitivty extends AppCompatActivity implements WaitForDataQuery {
     public void onProfileReady(Profile profile) {
         currentProfile = profile;
 
-        // TODO: figure out notifications
-        Database.getInstance().db.collection("profiles").document(profile.getId()).collection("invites").addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@javax.annotation.Nullable QuerySnapshot queryDocumentSnapshots, @javax.annotation.Nullable FirebaseFirestoreException e) {
-                if (queryDocumentSnapshots != null) {
-                    List<DocumentChange> inviteChanges = queryDocumentSnapshots.getDocumentChanges();
-                    Map<String, Object> viewedMap;
-
-                    int numInvites = 0;
-                    for (DocumentChange d : inviteChanges) {
-                        viewedMap = d.getDocument().getData();
-
-                        if (d.getType() == DocumentChange.Type.ADDED && viewedMap.get("viewed").equals(false)) {
-                            Log.d("DocumentChange2", d.getDocument().getId());
-                            ++numInvites;
-                        }
-                    }
-
-                    if (numInvites > 0) {
-                        Toast.makeText(getApplicationContext(), "You have " + numInvites + " unread invites!",
-                                Toast.LENGTH_SHORT).show();
-                    }
-                }
-            }
-        });
-
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.app_fragment, new HomePage(), "HOME_PAGE")
                 .commit();
