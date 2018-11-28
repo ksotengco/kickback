@@ -21,8 +21,7 @@ import java.util.ArrayList;
 
 import edu.cs371m.kickback.R;
 import edu.cs371m.kickback.activity.Appitivty;
-import edu.cs371m.kickback.activity.Database;
-import edu.cs371m.kickback.activity.MainActivity;
+import edu.cs371m.kickback.service.Database;
 import edu.cs371m.kickback.model.Event;
 import edu.cs371m.kickback.model.Profile;
 

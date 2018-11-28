@@ -1,7 +1,6 @@
 package edu.cs371m.kickback.page;
 
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -18,13 +17,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import edu.cs371m.kickback.R;
-import edu.cs371m.kickback.activity.Database;
 import edu.cs371m.kickback.activity.MainActivity;
-import edu.cs371m.kickback.model.Profile;
 
 public class SignUp extends Fragment {
 

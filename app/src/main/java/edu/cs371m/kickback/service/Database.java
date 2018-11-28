@@ -1,58 +1,47 @@
-package edu.cs371m.kickback.activity;
+package edu.cs371m.kickback.service;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Nullable;
-
+import edu.cs371m.kickback.listener.OnAddEventListener;
+import edu.cs371m.kickback.listener.OnAddProfileListener;
+import edu.cs371m.kickback.listener.OnGetProfileListener;
 import edu.cs371m.kickback.model.Event;
 import edu.cs371m.kickback.model.Invite;
 import edu.cs371m.kickback.model.Profile;
 
 public class Database {
-    public final FirebaseFirestore db;
-
-    private static final Database ourInstance = new Database();
-    private static WaitForDataQuery callback;
-
+    public FirebaseFirestore db;
+    private static Database database;
     public enum EventUpdates {
         ACCEPTED,
         DECLINED
     }
 
-    public static Database getInstance() {
-        return ourInstance;
-    }
-
-    public static void setCallback(WaitForDataQuery dataCallback) {
-        callback = dataCallback;
-    }
-
     private Database() { db = FirebaseFirestore.getInstance(); }
 
-    public void addProfile(final FirebaseUser profile, Bundle logInfo) {
+    public static Database getInstance() {
+        if (database == null) {
+            database = new Database();
+        }
+        return database;
+    }
+
+    public void addProfile(final FirebaseUser profile, Bundle logInfo, final OnAddProfileListener callback) {
         final Profile newProfile = new Profile(profile, logInfo);
         Map<String, Object> dataMap = new HashMap<>();
         dataMap.put(profile.getUid(), newProfile);
@@ -64,7 +53,7 @@ public class Database {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
-                            callback.onProfileReady(newProfile);
+                            callback.onAddProfile(newProfile);
                         } else {
                             Log.d("ADD PROFILE", "onFailure: " + task.getException().getMessage());
                         }
@@ -73,26 +62,26 @@ public class Database {
 
     }
 
-    public void getProfile(String uID) {
+    public void getProfile(String uID, final OnGetProfileListener callback) {
         db.collection("profiles")
                 .whereEqualTo("id", uID)
                 .get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        callback.onProfileReady(queryDocumentSnapshots.toObjects(Profile.class).get(0));
+                        callback.onGetProfile(queryDocumentSnapshots.toObjects(Profile.class).get(0));
                     }
                 });
     }
 
-    public void addEvent(final Event newEvent) {
+    public void addEvent(final Event newEvent, final OnAddEventListener callback) {
         db.collection("events")
                 .document(newEvent.getEventId())
                 .set(newEvent)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        callback.onEventReady(newEvent);
+                        callback.onAddEvent(newEvent);
                     }
                 });
     }

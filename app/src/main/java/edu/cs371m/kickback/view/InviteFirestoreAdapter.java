@@ -16,9 +16,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 
 import edu.cs371m.kickback.R;
-import edu.cs371m.kickback.activity.Database;
+import edu.cs371m.kickback.service.Database;
 import edu.cs371m.kickback.model.Event;
-import edu.cs371m.kickback.model.Invite;
 
 public class InviteFirestoreAdapter extends FirestoreRecyclerAdapter<Event, InviteFirestoreAdapter.InviteViewHolder> {
 

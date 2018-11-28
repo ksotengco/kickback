@@ -19,7 +19,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import edu.cs371m.kickback.R;
-import edu.cs371m.kickback.activity.Database;
 import edu.cs371m.kickback.activity.MainActivity;
 
 import static android.app.Activity.RESULT_OK;
