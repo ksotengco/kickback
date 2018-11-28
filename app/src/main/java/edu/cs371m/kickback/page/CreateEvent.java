@@ -21,6 +21,7 @@ import java.util.ArrayList;
 
 import edu.cs371m.kickback.R;
 import edu.cs371m.kickback.activity.Appitivty;
+import edu.cs371m.kickback.listener.OnAddEventListener;
 import edu.cs371m.kickback.service.Database;
 import edu.cs371m.kickback.model.Event;
 import edu.cs371m.kickback.model.Profile;
@@ -84,7 +85,7 @@ public class CreateEvent extends Fragment {
                     eventInfo.putStringArrayList("pending", pending);
 
                     Event newEvent = new Event(eventInfo);
-                    Database.getInstance().addEvent(newEvent);
+                    Database.getInstance().addEvent(newEvent, (OnAddEventListener) getActivity());
                 } else {
                     Toast.makeText(getActivity(), "You forgot something.", Toast.LENGTH_SHORT).show();
                 }
