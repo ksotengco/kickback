@@ -28,6 +28,7 @@ import java.util.Map;
 import javax.annotation.Nullable;
 
 import edu.cs371m.kickback.model.Event;
+import edu.cs371m.kickback.model.Invite;
 import edu.cs371m.kickback.model.Profile;
 
 public class Database {
@@ -63,23 +64,7 @@ public class Database {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
-                            Log.d("onComplete", "happens");
-                            Map<String, Object> tempMap = new HashMap<String, Object>();
-                            tempMap.put("viewed", true);
-                            tempMap.put("marked", false);
-
-                            db.collection("profiles").document(profile.getUid())
-                                    .collection("invites")
-                                    .document("dummy")
-                                    .set(tempMap)
-                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            if (task.isSuccessful()) {
-                                                callback.onProfileReady(newProfile);
-                                            }
-                                        }
-                                    });
+                            callback.onProfileReady(newProfile);
                         } else {
                             Log.d("ADD PROFILE", "onFailure: " + task.getException().getMessage());
                         }
@@ -113,13 +98,9 @@ public class Database {
     }
 
     public void addInvite (String uID, String eventID) {
-        Map<String, Object> tempMap = new HashMap<String, Object>();
-        tempMap.put("viewed", false);
-        tempMap.put("marked", false);
-
         db.collection("profiles/" + uID + "/invites")
                 .document(eventID)
-                .set(tempMap);
+                .set(new Invite(eventID));
     }
 
     public void viewInvite (String uID, String eventID) {
