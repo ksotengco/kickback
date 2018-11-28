@@ -10,7 +10,8 @@ admin.initializeApp();
 // Start writing Firebase Functions
 // https://firebase.google.com/docs/functions/typescript
 
-export const profileWritten = functions.firestore.document('profiles/{id}/invites/{invite}')
-	.onUpdate((snapshot, context) => {
-		return snapshot.ref.set({ id: 'cloud function works'}, { merge: true});
+export const INVITE_NOTIFICATION = functions.firestore.document('profiles/{id}/invites/{invite}')
+	.onCreate((snapshot, context) => {
+		console.log(snapshot.data());
+		return null;
 	});
