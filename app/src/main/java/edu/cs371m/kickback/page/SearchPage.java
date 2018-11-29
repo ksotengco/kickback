@@ -26,7 +26,6 @@ public class SearchPage extends Fragment {
 
     RecyclerView recyclerView;
     SearchFirestoreAdapter adapter;
-    TextView emailSearch;
 
     @Nullable
     @Override
@@ -37,34 +36,15 @@ public class SearchPage extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
 
-        emailSearch = v.findViewById(R.id.search_by_email);
         // https://stackoverflow.com/questions/1489852/android-handle-enter-in-an-edittext
-        emailSearch.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View view, int keycode, KeyEvent keyEvent) {
-                if (keyEvent.getAction() == KeyEvent.ACTION_DOWN && keycode == KeyEvent.KEYCODE_ENTER
-                        && emailSearch.getText().length() > 0) {
 
-                    String query = emailSearch.getText().toString();
+        FirestoreRecyclerOptions<Event> options = new FirestoreRecyclerOptions.Builder<Event>()
+                .setQuery(Database.getInstance().db.collection("events"), Event.class)
+                .build();
 
-                    FirestoreRecyclerOptions<Event> options = new FirestoreRecyclerOptions.Builder<Event>()
-                            .setQuery(Database.getInstance().db.collection("events")
-                            .whereGreaterThanOrEqualTo("hostName", query), Event.class)
-                            .build();
-
-                    adapter = new SearchFirestoreAdapter(options);
-                    adapter.startListening();
-                    recyclerView.setAdapter(adapter);
-
-                    return true;
-                }
-
-                return false;
-            }
-        });
-
-
-
+        adapter = new SearchFirestoreAdapter(options);
+        adapter.startListening();
+        recyclerView.setAdapter(adapter);
 
         return v;
     }
