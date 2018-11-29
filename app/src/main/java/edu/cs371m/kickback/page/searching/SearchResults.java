@@ -1,4 +1,4 @@
-package edu.cs371m.kickback.page;
+package edu.cs371m.kickback.page.searching;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -7,22 +7,18 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.google.firebase.auth.FirebaseAuth;
 
 import edu.cs371m.kickback.R;
 import edu.cs371m.kickback.model.Event;
 import edu.cs371m.kickback.service.Database;
-import edu.cs371m.kickback.view.InviteFirestoreAdapter;
 import edu.cs371m.kickback.view.SearchFirestoreAdapter;
 
-public class SearchPage extends Fragment {
+public class SearchResults extends Fragment {
 
     RecyclerView recyclerView;
     SearchFirestoreAdapter adapter;
@@ -35,8 +31,6 @@ public class SearchPage extends Fragment {
         recyclerView = v.findViewById(R.id.event_listings);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-
-        // https://stackoverflow.com/questions/1489852/android-handle-enter-in-an-edittext
 
         FirestoreRecyclerOptions<Event> options = new FirestoreRecyclerOptions.Builder<Event>()
                 .setQuery(Database.getInstance().db.collection("events"), Event.class)

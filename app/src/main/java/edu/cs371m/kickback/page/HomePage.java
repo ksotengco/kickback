@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import edu.cs371m.kickback.R;
 import edu.cs371m.kickback.activity.Appitivty;
+import edu.cs371m.kickback.page.searching.SearchResults;
 
 public class HomePage extends Fragment {
 
@@ -54,7 +55,7 @@ public class HomePage extends Fragment {
             public void onClick(View view) {
                 getActivity().getSupportFragmentManager().beginTransaction()
                         .addToBackStack(null)
-                        .replace(R.id.app_fragment, new SearchPage())
+                        .replace(R.id.app_fragment, new SearchResults())
                         .commit();
             }
         });
