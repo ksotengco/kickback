@@ -19,6 +19,8 @@ public class HomePage extends Fragment {
     private Button attendButton;
     private Button eventsButton;
 
+    private Button searchButton;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -45,6 +47,17 @@ public class HomePage extends Fragment {
 
         attendButton = v.findViewById(R.id.attendShortcut);
         eventsButton = v.findViewById(R.id.myEventsShortcut);
+
+        searchButton = v.findViewById(R.id.searchEvents);
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .addToBackStack(null)
+                        .replace(R.id.app_fragment, new SearchPage())
+                        .commit();
+            }
+        });
 
         return v;
     }

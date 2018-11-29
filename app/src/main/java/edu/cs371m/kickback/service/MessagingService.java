@@ -9,7 +9,7 @@ public class MessagingService extends FirebaseMessagingService {
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
-        Log.d("Message", remoteMessage.getData().get("data"));
+        Log.d("Message", remoteMessage.getData().get("invite"));
     }
 
     @Override
