@@ -9,7 +9,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -30,8 +32,12 @@ public class CreateEvent extends Fragment {
 
     private EditText editEventName;
     private EditText editDescription;
+
     private EditText editInvites;
     private Button inviteButton;
+
+    private DatePicker datePicker;
+    private TimePicker timePicker;
     private Button createEventButton;
 
     @Nullable
@@ -42,8 +48,12 @@ public class CreateEvent extends Fragment {
 
         editEventName = v.findViewById(R.id.editEventName);
         editDescription = v.findViewById(R.id.editDescription);
+
         editInvites = v.findViewById(R.id.editInvites);
         inviteButton = v.findViewById(R.id.inviteButton);
+
+        datePicker = v.findViewById(R.id.date_picker);
+        timePicker = v.findViewById(R.id.time_picker);
         createEventButton = v.findViewById(R.id.createEventButton);
 
         inviteButton.setOnClickListener(new View.OnClickListener() {
@@ -82,6 +92,21 @@ public class CreateEvent extends Fragment {
                     eventInfo.putString("description", editDescription.getText().toString());
                     eventInfo.putString("hostId", FirebaseAuth.getInstance().getCurrentUser().getUid());
                     eventInfo.putString("hostName", Appitivty.getCurrentProfile().getFirstName() + " " + Appitivty.getCurrentProfile().getLastName());
+
+                    ArrayList<Integer> date = new ArrayList<Integer>();
+                    date.add(datePicker.getDayOfMonth());
+                    // indexing offset; month indexed starting at 0
+                    date.add(datePicker.getMonth() + 1);
+                    date.add(datePicker.getYear());
+
+                    ArrayList<Integer> time = new ArrayList<Integer>();
+                    // this follows 24-hour format
+                    time.add(timePicker.getHour());
+                    time.add(timePicker.getMinute());
+
+                    eventInfo.putIntegerArrayList("date", date);
+                    eventInfo.putIntegerArrayList("time", time);
+
                     eventInfo.putStringArrayList("pending", pending);
 
                     Event newEvent = new Event(eventInfo);

@@ -47,18 +47,18 @@
             android:ems="10"
             android:hint="Enter user email"
             android:inputType="textPersonName"
-            app:layout_constraintBottom_toTopOf="@+id/calendarView"
+            app:layout_constraintBottom_toTopOf="@+id/date_picker"
             app:layout_constraintEnd_toStartOf="@+id/inviteButton"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/editDescription" />
 
         <DatePicker
             android:theme="@style/MyDatePickerTheme"
-            android:id="@+id/calendarView"
+            android:id="@+id/date_picker"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:headerBackground="@color/fui_bgFacebook"
-            app:layout_constraintBottom_toTopOf="@+id/editTime"
+            app:layout_constraintBottom_toTopOf="@+id/time_picker"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/editInvites" />
@@ -75,7 +75,7 @@
             app:layout_constraintTop_toTopOf="@+id/editInvites" />
 
         <TimePicker
-            android:id="@+id/editTime"
+            android:id="@+id/time_picker"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="32dp"
@@ -84,7 +84,7 @@
             app:layout_constraintBottom_toTopOf="@+id/createEventButton"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/calendarView" />
+            app:layout_constraintTop_toBottomOf="@+id/date_picker" />
 
         <Button
             android:id="@+id/createEventButton"
@@ -95,7 +95,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/editTime" />
+            app:layout_constraintTop_toBottomOf="@+id/time_picker" />
 
     </android.support.constraint.ConstraintLayout>
 
