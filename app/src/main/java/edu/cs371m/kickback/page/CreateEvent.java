@@ -1,5 +1,6 @@
 package edu.cs371m.kickback.page;
 
+import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -19,7 +20,12 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
 
 import edu.cs371m.kickback.R;
 import edu.cs371m.kickback.activity.Appitivty;
@@ -93,19 +99,7 @@ public class CreateEvent extends Fragment {
                     eventInfo.putString("hostId", FirebaseAuth.getInstance().getCurrentUser().getUid());
                     eventInfo.putString("hostName", Appitivty.getCurrentProfile().getFirstName() + " " + Appitivty.getCurrentProfile().getLastName());
 
-                    ArrayList<Integer> date = new ArrayList<Integer>();
-                    date.add(datePicker.getDayOfMonth());
-                    // indexing offset; month indexed starting at 0
-                    date.add(datePicker.getMonth() + 1);
-                    date.add(datePicker.getYear());
-
-                    ArrayList<Integer> time = new ArrayList<Integer>();
-                    // this follows 24-hour format
-                    time.add(timePicker.getHour());
-                    time.add(timePicker.getMinute());
-
-                    eventInfo.putIntegerArrayList("date", date);
-                    eventInfo.putIntegerArrayList("time", time);
+                    eventInfo.putString("date", createDate());
 
                     eventInfo.putStringArrayList("pending", pending);
 
@@ -119,6 +113,24 @@ public class CreateEvent extends Fragment {
 
 
         return v;
+    }
+
+    private String createDate () {
+        Calendar cal = Calendar.getInstance();
+
+        cal.set(Calendar.YEAR, datePicker.getYear());
+        // indexing offset; month indexed starting at 0
+        cal.set(Calendar.MONTH, datePicker.getMonth());
+        cal.set(Calendar.DAY_OF_MONTH, datePicker.getDayOfMonth());
+
+        // follows 24-hour format
+        cal.set(Calendar.HOUR_OF_DAY, timePicker.getHour());
+        cal.set(Calendar.MINUTE, timePicker.getMinute());
+
+        DateFormat formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss Z");
+        formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+        return formatter.format(cal.getTime());
     }
 
     private boolean emptyFields() {
