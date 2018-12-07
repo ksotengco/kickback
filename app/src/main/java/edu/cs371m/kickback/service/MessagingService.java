@@ -30,7 +30,6 @@ public class MessagingService extends FirebaseMessagingService {
 //                .setContentTitle("You have a new invite!")
 //                .setContentText(eventID)
 //                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
-
     }
 
     @Override
