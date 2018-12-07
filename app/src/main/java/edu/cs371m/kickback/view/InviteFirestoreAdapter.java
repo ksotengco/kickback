@@ -16,9 +16,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 
 import edu.cs371m.kickback.R;
-import edu.cs371m.kickback.activity.Database;
+import edu.cs371m.kickback.service.Database;
 import edu.cs371m.kickback.model.Event;
-import edu.cs371m.kickback.model.Invite;
 
 public class InviteFirestoreAdapter extends FirestoreRecyclerAdapter<Event, InviteFirestoreAdapter.InviteViewHolder> {
 
@@ -48,7 +47,7 @@ public class InviteFirestoreAdapter extends FirestoreRecyclerAdapter<Event, Invi
         Log.d("BIND", "onBindViewHolder: " + model.getEventName());
         holder.eventName.setText(model.getEventName());
         holder.hostName.setText(model.getHostName());
-        // TODO: Make buttons do stuff
+
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -80,7 +79,7 @@ public class InviteFirestoreAdapter extends FirestoreRecyclerAdapter<Event, Invi
         Log.d("create holder", "onCreateViewHolder: " + i);
         // Create a new instance of the ViewHolder, in this case we are using a custom
         // layout called R.layout.message for each item
-        View view = LayoutInflater.from(group.getContext()).inflate(R.layout.event_card, group, false);
+        View view = LayoutInflater.from(group.getContext()).inflate(R.layout.invite_card, group, false);
         return new InviteViewHolder(view);
     }
 

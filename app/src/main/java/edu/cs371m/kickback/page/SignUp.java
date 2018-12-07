@@ -1,7 +1,6 @@
 package edu.cs371m.kickback.page;
 
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -18,13 +17,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import edu.cs371m.kickback.R;
-import edu.cs371m.kickback.activity.Database;
 import edu.cs371m.kickback.activity.MainActivity;
-import edu.cs371m.kickback.model.Profile;
 
 public class SignUp extends Fragment {
 
@@ -33,7 +28,6 @@ public class SignUp extends Fragment {
     private EditText emailEdit;
     private EditText passwordEdit;
     private Button signUpButton;
-    private FirebaseAuth userAuth;
     private final String TAG = "SIGN_UP_FRAG";
 
     // ADAPTED FROM FC3
@@ -57,18 +51,19 @@ public class SignUp extends Fragment {
                         TextUtils.isEmpty(lastNameEdit.getText().toString())) {
                     Toast.makeText(view.getContext(), "Please enter in your first and last name", Toast.LENGTH_SHORT).show();
                 } else {
-
-                    userAuth.createUserWithEmailAndPassword(emailEdit.getText().toString(), passwordEdit.getText().toString())
+                    FirebaseAuth.getInstance()
+                            .createUserWithEmailAndPassword(emailEdit.getText().toString(), passwordEdit.getText().toString())
                             .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if (task.isSuccessful()) {
-                                        Log.d(TAG, "onComplete: " + "SUCCEEDED");
-                                        Bundle logInfo = new Bundle();
-                                        logInfo.putString("firstName", firstNameEdit.getText().toString());
-                                        logInfo.putString("lastName", lastNameEdit.getText().toString());
+                                        Bundle userInfo = new Bundle();
+                                        userInfo.putString("firstName", firstNameEdit.getText().toString());
+                                        userInfo.putString("lastName", lastNameEdit.getText().toString());
+                                        userInfo.putString("id", task.getResult().getUser().getUid());
+                                        userInfo.putString("email", task.getResult().getUser().getEmail());
 
-                                        ((MainActivity) getActivity()).startApptivity(logInfo);
+                                        ((MainActivity) getActivity()).startApptivity(userInfo);
                                     } else {
                                         Log.d(TAG, "onComplete: " + "FAILED");
                                     }
@@ -78,7 +73,6 @@ public class SignUp extends Fragment {
             }
         });
 
-        userAuth = FirebaseAuth.getInstance();
         return v;
     }
 }

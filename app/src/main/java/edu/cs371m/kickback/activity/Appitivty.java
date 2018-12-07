@@ -2,7 +2,6 @@ package edu.cs371m.kickback.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
@@ -11,36 +10,21 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
-import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentChange;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FieldValue;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QuerySnapshot;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import edu.cs371m.kickback.R;
+import edu.cs371m.kickback.listener.OnAddEventListener;
+import edu.cs371m.kickback.listener.OnAddProfileListener;
+import edu.cs371m.kickback.listener.OnGetProfileListener;
 import edu.cs371m.kickback.model.Event;
 import edu.cs371m.kickback.model.Profile;
 import edu.cs371m.kickback.page.EventInvites;
 import edu.cs371m.kickback.page.EventPage;
 import edu.cs371m.kickback.page.HomePage;
+import edu.cs371m.kickback.service.Database;
 
-// callback for getting and adding profile
-interface WaitForDataQuery {
-    void onProfileReady(Profile profile);
-    void onEventReady(Event event);
-}
-
-public class Appitivty extends AppCompatActivity implements WaitForDataQuery {
+public class Appitivty extends AppCompatActivity implements OnAddEventListener, OnGetProfileListener, OnAddProfileListener {
 
     private DrawerLayout drawerLayout;
     private NavigationView mainNav;
@@ -56,18 +40,21 @@ public class Appitivty extends AppCompatActivity implements WaitForDataQuery {
 
         drawerLayout = findViewById(R.id.drawerLayout);
         mainNav = findViewById(R.id.mainNav);
-        Database.setCallback(this);
 
         Intent caller = getIntent();
-        Bundle logInfo = caller.getBundleExtra("info");
+        Bundle userInfo = caller.getBundleExtra("userInfo");
 
-        if (logInfo != null) {
-            Database.getInstance().addProfile(FirebaseAuth.getInstance().getCurrentUser(), logInfo);
+        if (userInfo != null) {
+            Profile newProfile = new Profile(
+                    userInfo.getString("id"),
+                    userInfo.getString("email"),
+                    userInfo.getString("firstName"),
+                    userInfo.getString("lastName"));
+
+            Database.getInstance().addProfile(newProfile, this);
         } else {
-            Database.getInstance().getProfile(FirebaseAuth.getInstance().getCurrentUser().getUid());
+            Database.getInstance().getProfile(FirebaseAuth.getInstance().getCurrentUser().getUid(), this);
         }
-
-        //Log.d("Appitivity", "Profile: " + currentProfile.getFirstName());
 
         mainNav.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -97,8 +84,6 @@ public class Appitivty extends AppCompatActivity implements WaitForDataQuery {
                 return false;
             }
         });
-
-        // Get user info from database and store the user in Auth instance?
     }
 
     public static Profile getCurrentProfile() {
@@ -106,34 +91,8 @@ public class Appitivty extends AppCompatActivity implements WaitForDataQuery {
     }
 
     @Override
-    public void onProfileReady(Profile profile) {
+    public void onAddProfile(Profile profile) {
         currentProfile = profile;
-
-        // TODO: figure out notifications
-        Database.getInstance().db.collection("profiles").document(profile.getId()).collection("invites").addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@javax.annotation.Nullable QuerySnapshot queryDocumentSnapshots, @javax.annotation.Nullable FirebaseFirestoreException e) {
-                if (queryDocumentSnapshots != null) {
-                    List<DocumentChange> inviteChanges = queryDocumentSnapshots.getDocumentChanges();
-                    Map<String, Object> viewedMap;
-
-                    int numInvites = 0;
-                    for (DocumentChange d : inviteChanges) {
-                        viewedMap = d.getDocument().getData();
-
-                        if (d.getType() == DocumentChange.Type.ADDED && viewedMap.get("viewed").equals(false)) {
-                            Log.d("DocumentChange2", d.getDocument().getId());
-                            ++numInvites;
-                        }
-                    }
-
-                    if (numInvites > 0) {
-                        Toast.makeText(getApplicationContext(), "You have " + numInvites + " unread invites!",
-                                Toast.LENGTH_SHORT).show();
-                    }
-                }
-            }
-        });
 
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.app_fragment, new HomePage(), "HOME_PAGE")
@@ -141,7 +100,16 @@ public class Appitivty extends AppCompatActivity implements WaitForDataQuery {
     }
 
     @Override
-    public void onEventReady(final Event event) {
+    public void onGetProfile(Profile profile) {
+        currentProfile = profile;
+
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.app_fragment, new HomePage(), "HOME_PAGE")
+                .commit();
+    }
+
+    @Override
+    public void onAddEvent(final Event event) {
         Log.d("EVENT READY", "onEventReady: " + event.getDescription());
         for (String id : event.getPending()) {
             Database.getInstance().addInvite(id, event.getEventId());
