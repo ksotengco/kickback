@@ -126,6 +126,7 @@ public class CreateEvent extends Fragment {
         // follows 24-hour format
         cal.set(Calendar.HOUR_OF_DAY, timePicker.getHour());
         cal.set(Calendar.MINUTE, timePicker.getMinute());
+        cal.set(Calendar.SECOND, 0);
 
         DateFormat formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss Z");
         formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
