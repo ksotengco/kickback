@@ -20,6 +20,7 @@ import edu.cs371m.kickback.model.Event;
 
 public class SearchFirestoreAdapter extends FirestoreRecyclerAdapter<Event, SearchFirestoreAdapter.SearchViewHolder> {
 
+    private DateFormat string2Date;
     private DateFormat formatter;
 
     public class SearchViewHolder extends RecyclerView.ViewHolder {
@@ -34,7 +35,10 @@ public class SearchFirestoreAdapter extends FirestoreRecyclerAdapter<Event, Sear
             dateView = theView.findViewById(R.id.dateView);
 
             // date will be shown according to user's timezone (hopefully)
-            formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss Z");
+            string2Date = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss Z");
+
+            // TODO: possibly add user preference to displaying date/time
+            formatter = new SimpleDateFormat("MM/dd/yyyy hh:mm a");
             formatter.setTimeZone(TimeZone.getDefault());
         }
     }
@@ -50,7 +54,7 @@ public class SearchFirestoreAdapter extends FirestoreRecyclerAdapter<Event, Sear
         holder.eventName.setText(model.getEventName());
         holder.hostName.setText(model.getHostName());
         try {
-            holder.dateView.setText(formatter.format(formatter.parse(model.getDate())));
+            holder.dateView.setText(formatter.format(string2Date.parse(model.getDate())));
         } catch (java.text.ParseException e) {
             Log.d("onBindViewHolder", e.getLocalizedMessage());
             holder.dateView.setText(model.getDate());
