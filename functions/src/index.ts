@@ -26,7 +26,7 @@ export const INVITE_NOTIFICATION = functions.firestore.document('profiles/{id}/i
 				title: 'hola',
 				body: 'hallo'
 			},
-			token: "dCZPlnDNEQY:APA91bGyTdaAne4zT89_murqGlT6LzDu84CCotG_469FeNDXLe63acwascKlQMktrpO8VKcmx38gCOY4Q9eifN2BOeg4xSbqCaMX3OVjuJwOkeAm3nPFl8fXRjYe66i8nRNnblPJyC78"
+			token: "dZ4p9SxtotU:APA91bH-D6kqKADa_Vfbza7r_SF0kivVZpqwdob5w3qw9uAaVckTq6IpnvovIQz4QrOVoKxjIN7O-OSkJr5dJYD4s56r8eV_fKJWS0_Sf91mrDrSBfdOpphAQvDizQu2Oc0CrkShlIH0"
 		}).then((response) => {
 			// Response is a message ID string.
 			console.log('Successfully sent message:', response);

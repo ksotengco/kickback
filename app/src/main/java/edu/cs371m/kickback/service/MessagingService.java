@@ -21,8 +21,9 @@ public class MessagingService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         Log.d("MessageRECEIVEDa", remoteMessage.getData().get("invite"));
+        Log.d("NOTIFICATION__", remoteMessage.getNotification().getBody());
         String eventID = remoteMessage.getData().get("invite");
-        Toast.makeText(this, remoteMessage.getData().get("invite"), Toast.LENGTH_SHORT).show();
+
 
 //        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, "some id")
 //                .setSmallIcon(R.drawable.ic_launcher_foreground)
