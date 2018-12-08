@@ -21,8 +21,6 @@ import android.widget.TimePicker;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.Query;
 
-import org.imperiumlabs.geofirestore.GeoQuery;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
