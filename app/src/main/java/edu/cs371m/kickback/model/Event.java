@@ -17,6 +17,7 @@ public class Event {
     // TODO: ADd creation timestamp
 
     private String date;
+    private String location;
 
     private ArrayList<String> attendees;
     private ArrayList<String> pending;
@@ -33,6 +34,7 @@ public class Event {
         this.photoId = null; // TODO: change this
 
         this.date = eventInfo.getString("date");
+        this.location = eventInfo.getString("location");
         //this.time = eventInfo.getIntegerArrayList("time");
 
         this.attendees = new ArrayList<String>();
@@ -78,6 +80,10 @@ public class Event {
 
     public String getDate() {
         return date;
+    }
+
+    public String getLocation() {
+        return location;
     }
 
     /*public ArrayList<Integer> getDate() {
