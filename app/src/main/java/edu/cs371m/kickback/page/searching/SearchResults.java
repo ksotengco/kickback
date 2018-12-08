@@ -19,6 +19,9 @@ import android.widget.ImageButton;
 import android.widget.TimePicker;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.firebase.firestore.Query;
+
+import org.imperiumlabs.geofirestore.GeoQuery;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -106,10 +109,11 @@ public class SearchResults extends Fragment {
                     adapter.stopListening();
                 }
 
+                Query q = Database.getInstance().db.collection("events")
+                        .whereGreaterThanOrEqualTo("date", createDate(myCalendar)).orderBy("date");
+
                 FirestoreRecyclerOptions<Event> options = new FirestoreRecyclerOptions.Builder<Event>()
-                        .setQuery(Database.getInstance().db.collection("events")
-                        .whereGreaterThanOrEqualTo("date", createDate(myCalendar))
-                        .orderBy("date"), Event.class)
+                        .setQuery(q, Event.class)
                         .build();
 
                 adapter = new SearchFirestoreAdapter(options);

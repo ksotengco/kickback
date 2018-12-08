@@ -61,6 +61,9 @@ public class CreateEvent extends Fragment {
         final ArrayList<String> pending = new ArrayList<>();
         final ArrayList<String> location = new ArrayList<>();
 
+        final ArrayList<Double> lat = new ArrayList<>();
+        final ArrayList<Double> lon = new ArrayList<>();
+
         editEventName = v.findViewById(R.id.editEventName);
         editDescription = v.findViewById(R.id.editDescription);
 
@@ -93,7 +96,16 @@ public class CreateEvent extends Fragment {
                         return;
                     }
 
-                    location.add(address);
+                    // most recent location is saved
+                    if (location.isEmpty()) {
+                        lat.add(addresses.get(0).getLatitude());
+                        lon.add(addresses.get(0).getLongitude());
+                        location.add(address);
+                    } else {
+                        lat.set(0, addresses.get(0).getLatitude());
+                        lon.set(0, addresses.get(0).getLongitude());
+                        location.set(0, address);
+                    }
 
                 } catch (IOException e) {
                     Log.d("locationButton", e.getLocalizedMessage());
@@ -142,6 +154,9 @@ public class CreateEvent extends Fragment {
 
                     eventInfo.putString("date", createDate());
                     eventInfo.putString("location", location.get(0));
+
+                    eventInfo.putDouble("latitude", lat.get(0));
+                    eventInfo.putDouble("longitude", lon.get(0));
 
                     eventInfo.putStringArrayList("pending", pending);
 

@@ -22,6 +22,7 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+        <activity android:name=".page.creatingEvents.CreateEvent"></activity>
     </application>
 
 </manifest>

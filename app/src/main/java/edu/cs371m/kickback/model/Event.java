@@ -19,6 +19,9 @@ public class Event {
     private String date;
     private String location;
 
+    private double latitude;
+    private double longitude;
+
     private ArrayList<String> attendees;
     private ArrayList<String> pending;
     private ArrayList<String> comments;
@@ -35,6 +38,9 @@ public class Event {
 
         this.date = eventInfo.getString("date");
         this.location = eventInfo.getString("location");
+
+        this.latitude = eventInfo.getDouble("latitude");
+        this.longitude = eventInfo.getDouble("longitude");
         //this.time = eventInfo.getIntegerArrayList("time");
 
         this.attendees = new ArrayList<String>();
@@ -84,6 +90,14 @@ public class Event {
 
     public String getLocation() {
         return location;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
     }
 
     /*public ArrayList<Integer> getDate() {
