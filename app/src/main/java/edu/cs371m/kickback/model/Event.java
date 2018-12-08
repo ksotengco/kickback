@@ -17,7 +17,7 @@ public class Event {
     // TODO: ADd creation timestamp
 
     private String date;
-    private String location;
+    private ArrayList<String> location;
 
     private double latitude;
     private double longitude;
@@ -37,10 +37,10 @@ public class Event {
         this.photoId = null; // TODO: change this
 
         this.date = eventInfo.getString("date");
-        this.location = eventInfo.getString("location");
+        this.location = eventInfo.getStringArrayList("location");
 
-        this.latitude = eventInfo.getDouble("latitude");
-        this.longitude = eventInfo.getDouble("longitude");
+        /*this.latitude = eventInfo.getDouble("latitude");
+        this.longitude = eventInfo.getDouble("longitude");*/
         //this.time = eventInfo.getIntegerArrayList("time");
 
         this.attendees = new ArrayList<String>();
@@ -88,17 +88,17 @@ public class Event {
         return date;
     }
 
-    public String getLocation() {
+    public ArrayList<String> getLocation() {
         return location;
     }
 
-    public double getLatitude() {
+/*public double getLatitude() {
         return latitude;
     }
 
     public double getLongitude() {
         return longitude;
-    }
+    }*/
 
     /*public ArrayList<Integer> getDate() {
         return date;

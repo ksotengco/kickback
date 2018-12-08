@@ -37,7 +37,7 @@ public class LocationAndInvite extends Fragment {
     private Button locationButton;
     private Button inviteButton;
 
-    private Button nextButton;
+    private Button createButton;
     private Button prevButton;
 
     @Nullable
@@ -56,7 +56,7 @@ public class LocationAndInvite extends Fragment {
         locationButton = (Button) v.findViewById(R.id.locationButton);
         inviteButton   = (Button) v.findViewById(R.id.inviteButton);
 
-        nextButton     = (Button) v.findViewById(R.id.next_button);
+        createButton     = (Button) v.findViewById(R.id.create_button);
         prevButton     = (Button) v.findViewById(R.id.prev_button);
 
         inviteButton.setOnClickListener(new View.OnClickListener() {
@@ -108,8 +108,12 @@ public class LocationAndInvite extends Fragment {
                     // most recent location is saved
                     if (locationArr.isEmpty()) {
                         locationArr.add(address);
+                        locationArr.add(addresses.get(0).getLocality());
+                        locationArr.add(addresses.get(0).getAdminArea());
                     } else {
                         locationArr.set(0, address);
+                        locationArr.set(1, addresses.get(0).getLocality());
+                        locationArr.set(2, addresses.get(0).getAdminArea());
                     }
 
                 } catch (IOException e) {
@@ -120,7 +124,7 @@ public class LocationAndInvite extends Fragment {
             }
         });
 
-        nextButton.setOnClickListener(new View.OnClickListener() {
+        createButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 cb.OnLocationInviteSaved(locationArr, pending);

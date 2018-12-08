@@ -33,7 +33,7 @@ public class NameAndDescription extends Fragment {
         eventName = (EditText) v.findViewById(R.id.editEventName);
         eventDesc = (EditText) v.findViewById(R.id.editDescription);
 
-        nextButton = (Button) v.findViewById(R.id.prev_button);
+        nextButton = (Button) v.findViewById(R.id.next_button);
 
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -109,7 +109,7 @@ public class CreateEvent extends FragmentActivity implements OnButtonPressed, On
 
     @Override
     public void OnLocationInviteSaved(ArrayList<String> location,  ArrayList<String> pending) {
-        eventInfo.putString("location", location.get(0));
+        eventInfo.putStringArrayList("location", location);
         eventInfo.putStringArrayList("pending", pending);
 
         saveEvent();
