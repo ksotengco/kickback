@@ -2,7 +2,6 @@ package edu.cs371m.kickback.page.creatingEvents;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
@@ -11,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.GeoPoint;
 
 import java.util.ArrayList;
 
@@ -24,7 +24,7 @@ import edu.cs371m.kickback.service.Database;
 interface OnButtonPressed {
     void OnNameDescSaved(String name, String desc);
     void OnTimeDateSaved(String date);
-    void OnLocationInviteSaved( ArrayList<String> location, ArrayList<String> pending);
+    void OnLocationInviteSaved( ArrayList<String> location, double[] geolocation, ArrayList<String> pending);
 }
 
 // https://developer.android.com/training/animation/screen-slide
@@ -113,8 +113,9 @@ public class CreateEvent extends AppCompatActivity implements OnButtonPressed, O
     }
 
     @Override
-    public void OnLocationInviteSaved(ArrayList<String> location,  ArrayList<String> pending) {
+    public void OnLocationInviteSaved(ArrayList<String> location, double[] geolocation, ArrayList<String> pending) {
         eventInfo.putStringArrayList("location", location);
+        eventInfo.putDoubleArray("geolocation", geolocation);
         eventInfo.putStringArrayList("pending", pending);
 
         saveEvent();

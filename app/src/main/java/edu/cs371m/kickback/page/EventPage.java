@@ -8,9 +8,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import edu.cs371m.kickback.R;
 
@@ -21,6 +25,8 @@ public class EventPage extends Fragment implements OnMapReadyCallback {
     private TextView eventDesc;
 
     private GoogleMap gmap;
+
+    private final float defaultZoom = 15.0f;
 
     @Nullable
     @Override
@@ -45,6 +51,9 @@ public class EventPage extends Fragment implements OnMapReadyCallback {
     public void onMapReady(GoogleMap googleMap) {
         this.gmap = googleMap;
 
-
+        LatLng pos =  new LatLng(getArguments().getDouble("lat"), getArguments().getDouble("lng"));
+        gmap.clear();
+        gmap.addMarker(new MarkerOptions().position(pos));
+        gmap.animateCamera(CameraUpdateFactory.newCameraPosition(new CameraPosition(pos, defaultZoom, 0, 0)));
     }
 }

@@ -104,6 +104,9 @@ public class SearchFirestoreAdapter extends FirestoreRecyclerAdapter<Event, Sear
 
         eventInfo.putString("date", event.getDate());
 
+        eventInfo.putDouble("lat", event.getGeolocation().getLatitude());
+        eventInfo.putDouble("lng", event.getGeolocation().getLongitude());
+
         eventInfo.putStringArrayList("location", event.getLocation());
         eventInfo.putStringArrayList("pending", event.getPending());
 
