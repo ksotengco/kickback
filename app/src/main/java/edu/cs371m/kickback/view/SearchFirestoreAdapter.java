@@ -98,6 +98,8 @@ public class SearchFirestoreAdapter extends FirestoreRecyclerAdapter<Event, Sear
         eventInfo.putString("eventName", event.getEventName());
         eventInfo.putString("description", event.getDescription());
 
+        eventInfo.putString("eventId", event.getEventId());
+
         eventInfo.putString("hostId", event.getHostId());
         eventInfo.putString("hostName", event.getHostName());
 
