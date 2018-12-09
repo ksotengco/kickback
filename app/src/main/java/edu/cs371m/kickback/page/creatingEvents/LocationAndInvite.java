@@ -14,6 +14,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -28,7 +36,7 @@ import edu.cs371m.kickback.model.Profile;
 import edu.cs371m.kickback.service.Database;
 import edu.cs371m.kickback.service.StateAbbr;
 
-public class LocationAndInvite extends Fragment {
+public class LocationAndInvite extends Fragment implements OnMapReadyCallback {
 
     OnButtonPressed cb;
 
@@ -41,6 +49,18 @@ public class LocationAndInvite extends Fragment {
     private Button createButton;
     private Button prevButton;
 
+    private final ArrayList<String> pending = new ArrayList<>();
+    private final ArrayList<String> locationArr = new ArrayList<>();
+
+    private Geocoder g;
+
+    private GoogleMap gmap;
+    private MarkerOptions markerOptions;
+
+    private float defaultZoom = 15.0f;
+
+
+    // GoogleMaps code (some of it) taken from FC5
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -48,8 +68,14 @@ public class LocationAndInvite extends Fragment {
 
         cb = (OnButtonPressed) getActivity();
 
-        final ArrayList<String> pending = new ArrayList<>();
-        final ArrayList<String> locationArr = new ArrayList<>();
+        g = new Geocoder(getContext());
+
+        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+
+        markerOptions = new MarkerOptions();
+
+
 
         location = (EditText) v.findViewById(R.id.editLocation);
         invites  = (EditText) v.findViewById(R.id.editInvites);
@@ -88,33 +114,22 @@ public class LocationAndInvite extends Fragment {
         });
 
         locationButton.setOnClickListener(new View.OnClickListener() {
-            private Geocoder g;
+
             @Override
             public void onClick(View view) {
-                if (g == null) {
-                    g = new Geocoder(view.getContext());
-                }
-
                 List<Address> addresses;
 
                 try {
                     String address = location.getText().toString();
                     addresses = g.getFromLocationName(address, 5);
 
-                    if (addresses == null || addresses.size() == 0) {
-                        Toast.makeText(view.getContext(), "Location not found.", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
+                    findLocation(addresses);
 
-                    // most recent location is saved
-                    if (locationArr.isEmpty()) {
-                        locationArr.add(addresses.get(0).getAddressLine(0));
-                        locationArr.add(addresses.get(0).getLocality());
-                        locationArr.add(StateAbbr.convert2Abbr(addresses.get(0).getAdminArea()));
-                    } else {
-                        locationArr.set(0, addresses.get(0).getAddressLine(0));
-                        locationArr.set(1, addresses.get(0).getLocality());
-                        locationArr.set(2, StateAbbr.convert2Abbr(addresses.get(0).getAdminArea()));
+                    if (gmap != null) {
+                        LatLng pos = new LatLng(addresses.get(0).getLatitude(), addresses.get(0).getLongitude());
+                        gmap.clear();
+                        gmap.addMarker(markerOptions.position(pos));
+                        gmap.animateCamera(CameraUpdateFactory.newCameraPosition(new CameraPosition(pos, defaultZoom, 0, 0)));
                     }
 
                 } catch (IOException e) {
@@ -138,5 +153,43 @@ public class LocationAndInvite extends Fragment {
         return v;
     }
 
+    public void findLocation(List<Address> addresses) {
+        if (addresses == null || addresses.size() == 0) {
+            Toast.makeText(getContext(), "Location not found.", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
+        // most recent location is saved
+        if (locationArr.isEmpty()) {
+            locationArr.add(addresses.get(0).getAddressLine(0));
+            locationArr.add(addresses.get(0).getLocality());
+            locationArr.add(StateAbbr.convert2Abbr(addresses.get(0).getAdminArea()));
+        } else {
+            locationArr.set(0, addresses.get(0).getAddressLine(0));
+            locationArr.set(1, addresses.get(0).getLocality());
+            locationArr.set(2, StateAbbr.convert2Abbr(addresses.get(0).getAdminArea()));
+        }
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        this.gmap = googleMap;
+
+        gmap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+                gmap.clear();
+                gmap.addMarker(markerOptions.position(latLng));
+                gmap.animateCamera(CameraUpdateFactory.newCameraPosition(new CameraPosition(latLng, defaultZoom, 0, 0)));
+
+                try {
+                    List<Address> addresses = g.getFromLocation(latLng.latitude, latLng.longitude, 5);
+                    findLocation(addresses);
+                } catch (IOException e) {
+                    Log.d("onMapClick", e.getLocalizedMessage());
+                    Toast.makeText(getContext(), "Please enter a valid location.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
 }
