@@ -11,12 +11,21 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import edu.cs371m.kickback.R;
 import edu.cs371m.kickback.listener.OnAddEventListener;
 import edu.cs371m.kickback.listener.OnAddProfileListener;
 import edu.cs371m.kickback.listener.OnGetProfileListener;
+import edu.cs371m.kickback.listener.OnProfileSignOut;
 import edu.cs371m.kickback.model.Event;
 import edu.cs371m.kickback.model.Profile;
 import edu.cs371m.kickback.page.EventInvites;
@@ -51,9 +60,11 @@ public class Appitivty extends AppCompatActivity implements OnAddEventListener, 
                     userInfo.getString("firstName"),
                     userInfo.getString("lastName"));
 
+            newProfile.setActive(true);
+
             Database.getInstance().addProfile(newProfile, this);
         } else {
-            Database.getInstance().getProfile(FirebaseAuth.getInstance().getCurrentUser().getUid(), this);
+            Database.getInstance().signInProfile(FirebaseAuth.getInstance().getCurrentUser().getUid(), this);
         }
 
         mainNav.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -74,10 +85,17 @@ public class Appitivty extends AppCompatActivity implements OnAddEventListener, 
                                 .commit();
                         return true;
                     case R.id.nav_logout:
-                        FirebaseAuth.getInstance().signOut();
-                        Intent signOutIntent = new Intent(getApplicationContext(), MainActivity.class);
-                        startActivity(signOutIntent);
-                        finish();
+                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                        Database.getInstance().signOutProfile(user.getUid(), new OnProfileSignOut() {
+                            @Override
+                            public void onProfileSignout(String uID) {
+                                FirebaseAuth.getInstance().signOut();
+                                Intent signOutIntent = new Intent(getApplicationContext(), MainActivity.class);
+                                startActivity(signOutIntent);
+                                finish();
+                            }
+                        });
+
                         return true;
                 }
 
