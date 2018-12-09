@@ -1,11 +1,14 @@
 package edu.cs371m.kickback.page;
 
 import android.app.DatePickerDialog;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,11 +23,13 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.TimeZone;
 
 import edu.cs371m.kickback.R;
@@ -39,6 +44,9 @@ public class CreateEvent extends Fragment {
     private EditText editEventName;
     private EditText editDescription;
 
+    private EditText editLocation;
+    private Button locationButton;
+
     private EditText editInvites;
     private Button inviteButton;
 
@@ -51,9 +59,16 @@ public class CreateEvent extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.create_event, container, false);
         final ArrayList<String> pending = new ArrayList<>();
+        final ArrayList<String> location = new ArrayList<>();
+
+        final ArrayList<Double> lat = new ArrayList<>();
+        final ArrayList<Double> lon = new ArrayList<>();
 
         editEventName = v.findViewById(R.id.editEventName);
         editDescription = v.findViewById(R.id.editDescription);
+
+        editLocation = v.findViewById(R.id.editLocation);
+        locationButton = v.findViewById(R.id.locationButton);
 
         editInvites = v.findViewById(R.id.editInvites);
         inviteButton = v.findViewById(R.id.inviteButton);
@@ -61,6 +76,44 @@ public class CreateEvent extends Fragment {
         datePicker = v.findViewById(R.id.date_picker);
         timePicker = v.findViewById(R.id.time_picker);
         createEventButton = v.findViewById(R.id.createEventButton);
+
+        locationButton.setOnClickListener(new View.OnClickListener() {
+            private Geocoder g;
+            @Override
+            public void onClick(View view) {
+                if (g == null) {
+                    g = new Geocoder(view.getContext());
+                }
+
+                List<Address> addresses;
+
+                try {
+                    String address = editLocation.getText().toString();
+                    addresses = g.getFromLocationName(address, 5);
+
+                    if (addresses == null || addresses.size() == 0) {
+                        Toast.makeText(view.getContext(), "Location not found.", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    // most recent location is saved
+                    if (location.isEmpty()) {
+                        lat.add(addresses.get(0).getLatitude());
+                        lon.add(addresses.get(0).getLongitude());
+                        location.add(address);
+                    } else {
+                        lat.set(0, addresses.get(0).getLatitude());
+                        lon.set(0, addresses.get(0).getLongitude());
+                        location.set(0, address);
+                    }
+
+                } catch (IOException e) {
+                    Log.d("locationButton", e.getLocalizedMessage());
+                    Toast.makeText(view.getContext(), "Please enter a valid location.", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        });
 
         inviteButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,7 +145,7 @@ public class CreateEvent extends Fragment {
         createEventButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!emptyFields()) {
+                if (!emptyFields() || location.isEmpty()) {
                     Bundle eventInfo = new Bundle();
                     eventInfo.putString("eventName", editEventName.getText().toString());
                     eventInfo.putString("description", editDescription.getText().toString());
@@ -100,6 +153,10 @@ public class CreateEvent extends Fragment {
                     eventInfo.putString("hostName", Appitivty.getCurrentProfile().getFirstName() + " " + Appitivty.getCurrentProfile().getLastName());
 
                     eventInfo.putString("date", createDate());
+                    eventInfo.putString("location", location.get(0));
+
+                    eventInfo.putDouble("latitude", lat.get(0));
+                    eventInfo.putDouble("longitude", lon.get(0));
 
                     eventInfo.putStringArrayList("pending", pending);
 

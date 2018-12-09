@@ -1,5 +1,6 @@
 package edu.cs371m.kickback.page;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 
 import edu.cs371m.kickback.R;
 import edu.cs371m.kickback.activity.Appitivty;
+import edu.cs371m.kickback.page.creatingEvents.CreateEvent;
 import edu.cs371m.kickback.page.searching.SearchResults;
 
 public class HomePage extends Fragment {
@@ -39,10 +41,12 @@ public class HomePage extends Fragment {
         hostButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getActivity().getSupportFragmentManager().beginTransaction()
+                Intent in = new Intent(getContext(), CreateEvent.class);
+                getActivity().startActivity(in);
+                /* getActivity().getSupportFragmentManager().beginTransaction()
                         .addToBackStack(null)
                         .replace(R.id.app_fragment, new CreateEvent())
-                        .commit();
+                        .commit();*/
             }
         });
 

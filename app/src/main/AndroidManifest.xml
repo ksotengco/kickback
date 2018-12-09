@@ -2,12 +2,18 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="edu.cs371m.kickback">
 
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/logo"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyDwXjCoGLA5xnjuc6MENali29Kfz9dv4iI" />
         <activity android:name=".activity.MainActivity" android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -16,6 +22,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".activity.Appitivty"></activity>
+        <activity android:name=".page.creatingEvents.CreateEvent"></activity>
     </application>
 
 </manifest>
