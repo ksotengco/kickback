@@ -13,9 +13,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ImageButton;
+import android.widget.Spinner;
 import android.widget.TimePicker;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
@@ -41,6 +43,8 @@ public class SearchResults extends Fragment {
 
     Button searchButton;
 
+    Spinner stateFilter;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -54,6 +58,13 @@ public class SearchResults extends Fragment {
         timeButton = v.findViewById(R.id.time_button);
 
         searchButton = v.findViewById(R.id.search_button);
+
+        stateFilter = v.findViewById(R.id.state_filter);
+        ArrayAdapter<CharSequence> cityAdapter = ArrayAdapter.createFromResource(getContext(),
+                R.array.states,
+                android.R.layout.simple_spinner_item);
+        cityAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        stateFilter.setAdapter(cityAdapter);
 
         // https://stackoverflow.com/questions/14933330/datepicker-how-to-popup-datepicker-when-click-on-edittext
         final Calendar myCalendar = Calendar.getInstance();
@@ -109,6 +120,10 @@ public class SearchResults extends Fragment {
 
                 Query q = Database.getInstance().db.collection("events")
                         .whereGreaterThanOrEqualTo("date", createDate(myCalendar)).orderBy("date");
+
+                if (stateFilter.getSelectedItemPosition() != 0) {
+                    q = q.whereArrayContains("location", stateFilter.getSelectedItem().toString());
+                }
 
                 FirestoreRecyclerOptions<Event> options = new FirestoreRecyclerOptions.Builder<Event>()
                         .setQuery(q, Event.class)

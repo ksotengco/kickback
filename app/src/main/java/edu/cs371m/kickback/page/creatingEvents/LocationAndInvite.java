@@ -26,6 +26,7 @@ import java.util.List;
 import edu.cs371m.kickback.R;
 import edu.cs371m.kickback.model.Profile;
 import edu.cs371m.kickback.service.Database;
+import edu.cs371m.kickback.service.StateAbbr;
 
 public class LocationAndInvite extends Fragment {
 
@@ -107,13 +108,13 @@ public class LocationAndInvite extends Fragment {
 
                     // most recent location is saved
                     if (locationArr.isEmpty()) {
-                        locationArr.add(address);
+                        locationArr.add(addresses.get(0).getAddressLine(0));
                         locationArr.add(addresses.get(0).getLocality());
-                        locationArr.add(addresses.get(0).getAdminArea());
+                        locationArr.add(StateAbbr.convert2Abbr(addresses.get(0).getAdminArea()));
                     } else {
-                        locationArr.set(0, address);
+                        locationArr.set(0, addresses.get(0).getAddressLine(0));
                         locationArr.set(1, addresses.get(0).getLocality());
-                        locationArr.set(2, addresses.get(0).getAdminArea());
+                        locationArr.set(2, StateAbbr.convert2Abbr(addresses.get(0).getAdminArea()));
                     }
 
                 } catch (IOException e) {
@@ -127,7 +128,10 @@ public class LocationAndInvite extends Fragment {
         createButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                cb.OnLocationInviteSaved(locationArr, pending);
+                if (!locationArr.isEmpty())
+                    cb.OnLocationInviteSaved(locationArr, pending);
+                else
+                    Toast.makeText(getContext(), "Please enter a valid location.", Toast.LENGTH_SHORT).show();
             }
         });
 

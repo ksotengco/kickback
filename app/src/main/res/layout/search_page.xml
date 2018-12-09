@@ -40,6 +40,16 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@android:drawable/presence_away" />
 
+            <Spinner
+                android:id="@+id/state_filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:spinnerMode="dialog"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/search_button"
+                app:layout_constraintStart_toEndOf="@+id/time_button"
+                app:layout_constraintTop_toTopOf="parent"/>
+
             <Button
                 android:id="@+id/search_button"
                 android:layout_width="wrap_content"
