@@ -46,29 +46,26 @@ public class MainActivity extends AppCompatActivity {
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
 
-        GoogleApiAvailability.getInstance().makeGooglePlayServicesAvailable(this);
+//        GoogleApiAvailability.getInstance().makeGooglePlayServicesAvailable(this);
 
-        Log.d("ON CREATE", "aaaaa");
         userAuth = FirebaseAuth.getInstance();
-        userAuth.signOut();
+//        userAuth.signOut();
         FirebaseUser currentUser = userAuth.getCurrentUser();
 
         if (currentUser != null) {
             // redirect to home page
             startApptivity(null);
         } else {
-            Log.d("hahaha", "hahahaah");
             Database.getInstance()
                     .getProfiles(new OnGetProfilesListener() {
                         @Override
                         public void onGetProfiles(ArrayList<Profile> profiles) {
                             LandingPage landingPage = new LandingPage();
-                            HashMap<String, Boolean> emailMap = new HashMap<>();
+                            HashMap<String, Profile> emailMap = new HashMap<>();
                             for (Profile p : profiles) {
-                                emailMap.put(p.getEmail(), false);
+                                emailMap.put(p.getEmail(), p);
                             }
-                            landingPage.setEmails(emailMap);
-                            Log.d("MAIN", "aaaaa");
+                            landingPage.setEmailProfileMap(emailMap);
                             getSupportFragmentManager().beginTransaction()
                                     .add(R.id.main_fragment, landingPage, "LANDING_PAGE")
                                     .commit();

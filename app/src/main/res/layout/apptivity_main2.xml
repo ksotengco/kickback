@@ -6,23 +6,23 @@
     android:id="@+id/drawerLayout"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <FrameLayout
+        <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/app_fragment"
         xmlns:android="http://schemas.android.com/apk/res/android">
-        <include
-            android:id="@+id/my_toolbar"
-            layout="@layout/app_toolbar"></include>
-    </FrameLayout>
+            <include
+                android:id="@+id/my_toolbar"
+                layout="@layout/app_toolbar"></include>
+        </FrameLayout>
 
     <!-- Container for contents of drawer - use NavigationView to make configuration easier -->
     <android.support.design.widget.NavigationView
-        android:id="@+id/mainNav"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:fitsSystemWindows="true"
-        app:menu="@menu/nav_drawer"/>
+    android:id="@+id/mainNav"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:layout_gravity="start"
+    android:fitsSystemWindows="true"
+    app:menu="@menu/nav_drawer"/>
 
 </android.support.v4.widget.DrawerLayout>

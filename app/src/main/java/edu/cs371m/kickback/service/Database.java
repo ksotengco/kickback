@@ -1,6 +1,5 @@
 package edu.cs371m.kickback.service;
 
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -8,8 +7,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -24,6 +21,7 @@ import edu.cs371m.kickback.listener.OnAddEventListener;
 import edu.cs371m.kickback.listener.OnAddProfileListener;
 import edu.cs371m.kickback.listener.OnGetProfileListener;
 import edu.cs371m.kickback.listener.OnGetProfilesListener;
+import edu.cs371m.kickback.listener.OnProfileSignOut;
 import edu.cs371m.kickback.model.Event;
 import edu.cs371m.kickback.model.Invite;
 import edu.cs371m.kickback.model.Profile;
@@ -73,7 +71,9 @@ public class Database {
                 });
     }
 
-    public void signInProfile(final String uId, Map<String, Object> updates, final OnGetProfileListener callback) {
+    public void signInProfile(final String uId, final OnGetProfileListener callback) {
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("active", true);
         db.collection("profiles")
                 .document(uId)
                 .set(updates, SetOptions.merge())
@@ -89,6 +89,20 @@ public class Database {
                                         callback.onGetProfile(documentSnapshot.toObject(Profile.class));
                                     }
                                 });
+                    }
+                });
+    }
+
+    public void signOutProfile(final String uId, final OnProfileSignOut callback) {
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("active", false);
+        db.collection("profiles")
+                .document(uId)
+                .set(updates, SetOptions.merge())
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        callback.onProfileSignout(uId);
                     }
                 });
     }

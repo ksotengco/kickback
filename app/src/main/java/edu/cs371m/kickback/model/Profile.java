@@ -19,7 +19,6 @@ public class Profile {
     private String lastName;
     private String id;
     private String email;
-    private String deviceToken;
     private boolean active;
 
     private Photo profilePicture;
@@ -58,16 +57,8 @@ public class Profile {
         return active;
     }
 
-    public String getDeviceToken() {
-        return deviceToken;
-    }
-
     public void setActive(boolean active) {
         this.active = active;
-    }
-
-    public void setDeviceToken(String deviceToken) {
-        this.deviceToken = deviceToken;
     }
 
     public Photo getProfilePicture() {
