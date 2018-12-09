@@ -10,16 +10,20 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.SetOptions;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import edu.cs371m.kickback.listener.OnAddEventListener;
 import edu.cs371m.kickback.listener.OnAddProfileListener;
 import edu.cs371m.kickback.listener.OnGetProfileListener;
+import edu.cs371m.kickback.listener.OnGetProfilesListener;
 import edu.cs371m.kickback.model.Event;
 import edu.cs371m.kickback.model.Invite;
 import edu.cs371m.kickback.model.Profile;
@@ -69,6 +73,42 @@ public class Database {
                 });
     }
 
+    public void signInProfile(final String uId, Map<String, Object> updates, final OnGetProfileListener callback) {
+        db.collection("profiles")
+                .document(uId)
+                .set(updates, SetOptions.merge())
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        db.collection("profiles")
+                                .document(uId)
+                                .get()
+                                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                        callback.onGetProfile(documentSnapshot.toObject(Profile.class));
+                                    }
+                                });
+                    }
+                });
+    }
+
+    public void getProfiles(final OnGetProfilesListener callback) {
+        db.collection("profiles").get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        Log.d("COMPLETE", "TASK: " + task.isSuccessful());
+                }
+                })
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        callback.onGetProfiles((ArrayList<Profile>) queryDocumentSnapshots.toObjects(Profile.class));
+                    }
+                });
+    }
+
     public void addEvent(final Event newEvent, final OnAddEventListener callback) {
         db.collection("events")
                 .document(newEvent.getEventId())
@@ -113,6 +153,5 @@ public class Database {
                     .update("attendees",
                             FieldValue.arrayUnion(FirebaseAuth.getInstance().getCurrentUser().getUid()));
         }
-
     }
 }

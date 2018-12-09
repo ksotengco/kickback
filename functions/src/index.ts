@@ -15,22 +15,26 @@ admin.initializeApp({
 // Start writing Firebase Functions
 // https://firebase.google.com/docs/functions/typescript
 
-export const INVITE_NOTIFICATION = functions.firestore.document('profiles/{id}/invites/{invite}')
+export const INVITE_NOTIFICATION = functions.firestore.document('profiles/{profile_id}/invites/{event_id}')
 	.onCreate((snapshot, context) => {
-		console.log(snapshot.data());
-		return admin.messaging().send({
-			data: {
-				invite: snapshot.get('eventId')
-			},
-			notification: {
-				title: 'hola',
-				body: 'hallo'
-			},
-			token: "dZ4p9SxtotU:APA91bH-D6kqKADa_Vfbza7r_SF0kivVZpqwdob5w3qw9uAaVckTq6IpnvovIQz4QrOVoKxjIN7O-OSkJr5dJYD4s56r8eV_fKJWS0_Sf91mrDrSBfdOpphAQvDizQu2Oc0CrkShlIH0"
-		}).then((response) => {
-			// Response is a message ID string.
-			console.log('Successfully sent message:', response);
-		}).catch((error) => {
-			console.log('Error sending message:', error);
+		const profileId = context.params.profile_id;
+		const eventId = context.params.event_id;
+		const profileRef = snapshot.ref.parent.parent;
+		console.log(profileRef);
+		return profileRef.get().then(snapshot => {
+			console.log('profile snapshot data', snapshot.data())
+			const profileData = snapshot.data();
+			const deviceToken = profileData.deviceToken;
+			console.log(profileData.deviceToken);
+			return admin.messaging().send({
+				data: {
+					eventId: eventId
+				},
+				notification: {
+					title: 'hola',
+					body: 'hallo'
+				},
+				token: deviceToken
+			});
 		});
 	});

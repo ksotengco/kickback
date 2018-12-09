@@ -11,7 +11,14 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import edu.cs371m.kickback.R;
 import edu.cs371m.kickback.listener.OnAddEventListener;
@@ -24,11 +31,12 @@ import edu.cs371m.kickback.page.EventPage;
 import edu.cs371m.kickback.page.HomePage;
 import edu.cs371m.kickback.service.Database;
 
-public class Appitivty extends AppCompatActivity implements OnAddEventListener, OnGetProfileListener, OnAddProfileListener {
+public class Appitivty extends AppCompatActivity implements OnAddEventListener {
 
     private DrawerLayout drawerLayout;
     private NavigationView mainNav;
     private static Profile currentProfile;
+    private String token;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -42,19 +50,55 @@ public class Appitivty extends AppCompatActivity implements OnAddEventListener, 
         mainNav = findViewById(R.id.mainNav);
 
         Intent caller = getIntent();
-        Bundle userInfo = caller.getBundleExtra("userInfo");
+        final Bundle userInfo = caller.getBundleExtra("userInfo");
 
-        if (userInfo != null) {
-            Profile newProfile = new Profile(
-                    userInfo.getString("id"),
-                    userInfo.getString("email"),
-                    userInfo.getString("firstName"),
-                    userInfo.getString("lastName"));
+        FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+            @Override
+            public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                if (task.isSuccessful()) {
+                    Log.d("TOKEN", task.getResult().getToken());
+                    token = task.getResult().getToken();
+                    if (userInfo != null) {
+                        Profile newProfile = new Profile(
+                                userInfo.getString("id"),
+                                userInfo.getString("email"),
+                                userInfo.getString("firstName"),
+                                userInfo.getString("lastName"));
 
-            Database.getInstance().addProfile(newProfile, this);
-        } else {
-            Database.getInstance().getProfile(FirebaseAuth.getInstance().getCurrentUser().getUid(), this);
-        }
+                        newProfile.setActive(true);
+                        newProfile.setDeviceToken(token);
+
+                        Database.getInstance().addProfile(newProfile, new OnAddProfileListener() {
+                            @Override
+                            public void onAddProfile(Profile newProfile) {
+                                currentProfile = newProfile;
+
+                                getSupportFragmentManager().beginTransaction()
+                                        .add(R.id.app_fragment, new HomePage(), "HOME_PAGE")
+                                        .commit();
+                            }
+                        });
+                    } else {
+                        Map<String, Object> updates = new HashMap<>();
+                        updates.put("active", true);
+                        updates.put("deviceToken", token);
+                        Database.getInstance().signInProfile(FirebaseAuth.getInstance().getCurrentUser().getUid(), updates,
+                                new OnGetProfileListener() {
+                                    @Override
+                                    public void onGetProfile(Profile profile) {
+                                        currentProfile = profile;
+
+                                        getSupportFragmentManager().beginTransaction()
+                                                .add(R.id.app_fragment, new HomePage(), "HOME_PAGE")
+                                                .commit();
+                                    }
+                                });
+                    }
+                }
+            }
+        });
+
+
 
         mainNav.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -88,24 +132,6 @@ public class Appitivty extends AppCompatActivity implements OnAddEventListener, 
 
     public static Profile getCurrentProfile() {
         return currentProfile;
-    }
-
-    @Override
-    public void onAddProfile(Profile profile) {
-        currentProfile = profile;
-
-        getSupportFragmentManager().beginTransaction()
-                .add(R.id.app_fragment, new HomePage(), "HOME_PAGE")
-                .commit();
-    }
-
-    @Override
-    public void onGetProfile(Profile profile) {
-        currentProfile = profile;
-
-        getSupportFragmentManager().beginTransaction()
-                .add(R.id.app_fragment, new HomePage(), "HOME_PAGE")
-                .commit();
     }
 
     @Override
