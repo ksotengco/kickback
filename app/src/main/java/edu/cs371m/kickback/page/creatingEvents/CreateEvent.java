@@ -10,7 +10,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.GeoPoint;
 
 import java.util.ArrayList;
 
@@ -18,7 +17,6 @@ import edu.cs371m.kickback.R;
 import edu.cs371m.kickback.activity.Appitivty;
 import edu.cs371m.kickback.listener.OnAddEventListener;
 import edu.cs371m.kickback.model.Event;
-import edu.cs371m.kickback.page.EventPage;
 import edu.cs371m.kickback.service.Database;
 
 interface OnButtonPressed {

@@ -20,7 +20,7 @@ import java.util.TimeZone;
 
 import edu.cs371m.kickback.R;
 import edu.cs371m.kickback.model.Event;
-import edu.cs371m.kickback.page.EventPage;
+import edu.cs371m.kickback.page.userEvents.EventPage;
 
 public class SearchFirestoreAdapter extends FirestoreRecyclerAdapter<Event, SearchFirestoreAdapter.SearchViewHolder> {
 
@@ -58,7 +58,7 @@ public class SearchFirestoreAdapter extends FirestoreRecyclerAdapter<Event, Sear
     }
 
     @Override
-    protected void onBindViewHolder(@NonNull SearchViewHolder holder, final int position, @NonNull Event model) {
+    protected void onBindViewHolder(@NonNull SearchViewHolder holder, int position, @NonNull final Event model) {
         holder.eventName.setText(model.getEventName());
         holder.hostName.setText(model.getHostName());
         try {
@@ -71,10 +71,9 @@ public class SearchFirestoreAdapter extends FirestoreRecyclerAdapter<Event, Sear
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Event event = getItem(position);
                 EventPage goToEvent = new EventPage();
 
-                goToEvent.setArguments(eventBundler(event));
+                goToEvent.setArguments(eventBundler(model));
                 ((AppCompatActivity)view.getContext()).getSupportFragmentManager()
                         .beginTransaction()
                         .addToBackStack(null)
