@@ -26,7 +26,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:scaleType="fitXY"
-                android:src="@drawable/placeholder"
+                android:src="@drawable/accept"
                 app:layout_constraintBottom_toTopOf="@+id/image_guideline"
                 app:layout_constraintTop_toTopOf="parent" />
 

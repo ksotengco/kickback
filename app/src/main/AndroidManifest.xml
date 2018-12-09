@@ -6,16 +6,15 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/logo"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDwXjCoGLA5xnjuc6MENali29Kfz9dv4iI" />
-        <activity android:name=".activity.MainActivity">
+        <activity android:name=".activity.MainActivity" android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -23,11 +22,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".activity.Appitivty"></activity>
-        <service android:name=".service.MessagingService">
-            <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT" />
-            </intent-filter>
-        </service>
         <activity android:name=".page.creatingEvents.CreateEvent"></activity>
     </application>
 

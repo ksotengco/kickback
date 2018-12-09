@@ -5,30 +5,51 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
+import android.util.Patterns;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
 
-import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import edu.cs371m.kickback.R;
 import edu.cs371m.kickback.activity.MainActivity;
+import edu.cs371m.kickback.listener.OnGetProfilesListener;
+import edu.cs371m.kickback.model.Profile;
+import edu.cs371m.kickback.service.Database;
 
 import static android.app.Activity.RESULT_OK;
 
 public class LandingPage extends Fragment {
 
-    private Button signUpButton;
-    private Button signInButton;
+    private Button continueButton;
+    private EditText emailEditText;
+    private EditText passwordEditText;
+    private ProgressBar progress;
+    private Map<String, Profile> emailMap;
+    boolean reloadProfiles;
     private final String TAG = "LANDING_PAGE_FRAG";
     final int RC_SIGN_IN = 1;
+
+    public void setEmailProfileMap(Map <String, Profile> emailMap) {
+        this.emailMap = emailMap;
+    }
 
     // WITCHELL
     @Nullable
@@ -36,35 +57,85 @@ public class LandingPage extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.landing_page, container, false);
 
-        signUpButton = v.findViewById(R.id.signUpButton);
-        signInButton = v.findViewById(R.id.signInButton);
+        continueButton = v.findViewById(R.id.button);
+        emailEditText = v.findViewById(R.id.emailEditText);
+        passwordEditText = v.findViewById(R.id.passwordEditText);
+        progress = v.findViewById(R.id.progressCircle);
 
-        signUpButton.setOnClickListener(new View.OnClickListener() {
+        continueButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getActivity().getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.main_fragment, new SignUp())
-                        .addToBackStack(null)
-                        .commit();
-            }
-        });
+                if (reloadProfiles) {
+                    Database.getInstance().getProfiles(new OnGetProfilesListener() {
+                        @Override
+                        public void onGetProfiles(ArrayList<Profile> profiles) {
+                            HashMap<String, Profile> emailMap = new HashMap<>();
+                            for (Profile p : profiles) {
+                                emailMap.put(p.getEmail(), p);
+                            }
+                            setEmailProfileMap(emailMap);
+                            attemptToContinue();
+                        }
+                    });
+                } else {
+                    attemptToContinue();
+                }
 
-        // Adapted from FC6
-        signInButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                List<AuthUI.IdpConfig> providers = Arrays.asList(
-                        new AuthUI.IdpConfig.EmailBuilder().build());
-
-                // Create and launch sign-in intent
-                startActivityForResult(AuthUI.getInstance()
-                                .createSignInIntentBuilder()
-                                .setAvailableProviders(providers)
-                                .build(), RC_SIGN_IN);
             }
         });
 
         return v;
+    }
+
+    public void attemptToContinue() {
+        String emailValue = emailEditText.getText().toString();
+        String passValue = passwordEditText.getText().toString();
+
+        if (emailValue != null && Patterns.EMAIL_ADDRESS.matcher(emailValue).matches()) {
+            if (passValue != null && passValue.length() >= 6) {
+                continueButton.setVisibility(View.INVISIBLE);
+                progress.setVisibility(View.VISIBLE);
+                Profile profile = emailMap.getOrDefault(emailValue, null);
+                if (profile == null) {
+                    // sign up
+                    SignUp signUp = new SignUp();
+                    Bundle userInfo = new Bundle();
+                    userInfo.putString("email", emailValue);
+                    userInfo.putString("pass", passValue);
+                    signUp.setArguments(userInfo);
+                    getActivity().getSupportFragmentManager()
+                            .beginTransaction()
+                            .addToBackStack(null)
+                            .replace(R.id.main_fragment, new SignUp())
+                            .commit();
+                } else {
+                    // sign in
+                    if (profile.isActive()) {
+                        continueButton.setVisibility(View.VISIBLE);
+                        progress.setVisibility(View.INVISIBLE);
+                        Toast toast = Toast.makeText(getContext(), "ERROR: This account is signed in on another device. Please sign out on the other device and try again.", Toast.LENGTH_LONG);
+                        toast.setGravity(Gravity.CENTER, 0,0);
+                        toast.show();
+                        reloadProfiles = true;
+                    } else {
+                        FirebaseAuth.getInstance()
+                                .signInWithEmailAndPassword(emailValue, passValue)
+                                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<AuthResult> task) {
+                                        if (task.isSuccessful()) {
+                                            ((MainActivity) getActivity()).startApptivity(null);
+                                        }
+                                    }
+                                });
+                    }
+                }
+            }
+        } else {
+            Toast toast = Toast.makeText(getContext(), "Required:\nEmail must be valid format\nPassword min length is 6", Toast.LENGTH_LONG);
+            toast.setGravity(Gravity.CENTER, 0,0);
+            toast.show();
+        }
     }
 
     // WITCHEL Adapted from FC6

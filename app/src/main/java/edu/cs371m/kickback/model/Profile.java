@@ -19,6 +19,7 @@ public class Profile {
     private String lastName;
     private String id;
     private String email;
+    private boolean active;
 
     private Photo profilePicture;
 
@@ -50,6 +51,14 @@ public class Profile {
     }
     public String getEmail() {
         return email;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     public Photo getProfilePicture() {

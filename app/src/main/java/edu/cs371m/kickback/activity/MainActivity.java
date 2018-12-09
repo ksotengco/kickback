@@ -7,7 +7,10 @@ import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageButton;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -20,9 +23,14 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.google.firebase.messaging.FirebaseMessaging;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import edu.cs371m.kickback.listener.OnGetProfilesListener;
 import edu.cs371m.kickback.model.Profile;
 import edu.cs371m.kickback.page.LandingPage;
 import edu.cs371m.kickback.R;
+import edu.cs371m.kickback.service.Database;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -32,30 +40,38 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Toolbar toolbar = findViewById(R.id.my_toolbar);
+        ImageButton menu = findViewById(R.id.menuButton);
+        menu.setVisibility(View.INVISIBLE);
+        toolbar.setTitle("");
+        setSupportActionBar(toolbar);
 
-        GoogleApiAvailability.getInstance().makeGooglePlayServicesAvailable(this);
+//        GoogleApiAvailability.getInstance().makeGooglePlayServicesAvailable(this);
 
         userAuth = FirebaseAuth.getInstance();
-        //userAuth.signOut();
+//        userAuth.signOut();
         FirebaseUser currentUser = userAuth.getCurrentUser();
 
         if (currentUser != null) {
             // redirect to home page
             startApptivity(null);
         } else {
-            getSupportFragmentManager().beginTransaction()
-                                       .add(R.id.main_fragment, new LandingPage(), "LANDING_PAGE")
-                                       .commit();
+            Database.getInstance()
+                    .getProfiles(new OnGetProfilesListener() {
+                        @Override
+                        public void onGetProfiles(ArrayList<Profile> profiles) {
+                            LandingPage landingPage = new LandingPage();
+                            HashMap<String, Profile> emailMap = new HashMap<>();
+                            for (Profile p : profiles) {
+                                emailMap.put(p.getEmail(), p);
+                            }
+                            landingPage.setEmailProfileMap(emailMap);
+                            getSupportFragmentManager().beginTransaction()
+                                    .add(R.id.main_fragment, landingPage, "LANDING_PAGE")
+                                    .commit();
+                        }
+                    });
         }
-
-        FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
-            @Override
-            public void onComplete(@NonNull Task<InstanceIdResult> task) {
-                if (task.isSuccessful()) {
-                    Log.d("TOKEN", task.getResult().getToken());
-                }
-            }
-        });
     }
 
     // redirects to home page
