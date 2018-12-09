@@ -6,6 +6,8 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -26,7 +28,7 @@ interface OnButtonPressed {
 }
 
 // https://developer.android.com/training/animation/screen-slide
-public class CreateEvent extends FragmentActivity implements OnButtonPressed, OnAddEventListener {
+public class CreateEvent extends AppCompatActivity implements OnButtonPressed, OnAddEventListener {
 
     private static final int PAGES = 3;
 
@@ -39,6 +41,10 @@ public class CreateEvent extends FragmentActivity implements OnButtonPressed, On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.create_event_main);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        setSupportActionBar(toolbar);
+
         createEvent = (CustomViewPager) findViewById(R.id.create_event_pager);
         pagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
         createEvent.setAdapter(pagerAdapter);
