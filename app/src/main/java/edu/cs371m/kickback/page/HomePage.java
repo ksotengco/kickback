@@ -15,6 +15,7 @@ import edu.cs371m.kickback.R;
 import edu.cs371m.kickback.activity.Appitivty;
 import edu.cs371m.kickback.page.creatingEvents.CreateEvent;
 import edu.cs371m.kickback.page.searching.SearchResults;
+import edu.cs371m.kickback.page.userEvents.MyEvents;
 
 public class HomePage extends Fragment {
 
@@ -52,6 +53,15 @@ public class HomePage extends Fragment {
 
         attendButton = v.findViewById(R.id.attendShortcut);
         eventsButton = v.findViewById(R.id.myEventsShortcut);
+        eventsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .addToBackStack(null)
+                        .replace(R.id.app_fragment, new MyEvents())
+                        .commit();
+            }
+        });
 
         searchButton = v.findViewById(R.id.searchEvents);
         searchButton.setOnClickListener(new View.OnClickListener() {

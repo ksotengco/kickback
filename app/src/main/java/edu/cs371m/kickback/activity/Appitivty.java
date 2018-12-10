@@ -11,15 +11,8 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.InstanceIdResult;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import edu.cs371m.kickback.R;
 import edu.cs371m.kickback.listener.OnAddEventListener;
@@ -29,7 +22,7 @@ import edu.cs371m.kickback.listener.OnProfileSignOut;
 import edu.cs371m.kickback.model.Event;
 import edu.cs371m.kickback.model.Profile;
 import edu.cs371m.kickback.page.EventInvites;
-import edu.cs371m.kickback.page.EventPage;
+import edu.cs371m.kickback.page.userEvents.EventPage;
 import edu.cs371m.kickback.page.HomePage;
 import edu.cs371m.kickback.service.Database;
 
