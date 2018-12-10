@@ -130,7 +130,12 @@ public class EventPage extends Fragment implements OnMapReadyCallback {
         });
 
         if (TextUtils.equals(hostID, FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+            buttonView.setVisibility(View.VISIBLE);
+
             editButton.setVisibility(View.VISIBLE);
+            editButton.setClickable(true);
+
+            saveButton.setVisibility(View.VISIBLE);
             editButton.setClickable(true);
         }
 

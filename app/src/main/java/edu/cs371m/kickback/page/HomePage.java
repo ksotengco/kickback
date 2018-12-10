@@ -45,8 +45,6 @@ public class HomePage extends Fragment {
     private RecyclerView recyclerView;
     private SearchFirestoreAdapter adapter;
 
-    private final FirestoreRecyclerOptions.Builder<Event> builder = new FirestoreRecyclerOptions.Builder<Event>();
-
     private ProgressBar progressBar;
 
     private LocationManager mLocationManager;
@@ -73,7 +71,8 @@ public class HomePage extends Fragment {
                         .whereGreaterThanOrEqualTo("geolocation", lowGeo)
                         .whereLessThanOrEqualTo("geolocation", upperGeo);
 
-                FirestoreRecyclerOptions<Event> options = builder.setQuery(q, Event.class)
+                FirestoreRecyclerOptions<Event> options = new FirestoreRecyclerOptions.Builder<Event>()
+                        .setQuery(q, Event.class)
                         .build();
 
                 if (adapter != null) {
