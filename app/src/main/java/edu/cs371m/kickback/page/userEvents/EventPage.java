@@ -38,9 +38,11 @@ import com.google.firebase.firestore.GeoPoint;
 
 import java.io.IOException;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
@@ -139,6 +141,16 @@ public class EventPage extends Fragment implements OnMapReadyCallback {
 
     private void timeAndDateInit() {
         // https://stackoverflow.com/questions/14933330/datepicker-how-to-popup-datepicker-when-click-on-edittext
+        DateFormat formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss Z");
+        formatter.setTimeZone(TimeZone.getDefault());
+
+        try {
+            Date date = formatter.parse(getArguments().getString("date"));
+            myCalendar.setTime(date);
+        } catch (ParseException e) {
+            Log.d("timeAndDateInit", e.getLocalizedMessage());
+        }
+
         final DatePickerDialog.OnDateSetListener dateListener = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear,
@@ -150,6 +162,7 @@ public class EventPage extends Fragment implements OnMapReadyCallback {
                 myCalendar.set(Calendar.HOUR_OF_DAY, 0);
                 myCalendar.set(Calendar.MINUTE, 0);
                 myCalendar.set(Calendar.SECOND, 0);
+
             }
 
         };
