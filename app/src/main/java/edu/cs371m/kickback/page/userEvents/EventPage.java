@@ -1,5 +1,7 @@
 package edu.cs371m.kickback.page.userEvents;
 
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
@@ -13,8 +15,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
@@ -32,8 +37,12 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.GeoPoint;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.TimeZone;
 
 import edu.cs371m.kickback.R;
 import edu.cs371m.kickback.service.Database;
@@ -53,6 +62,9 @@ public class EventPage extends Fragment implements OnMapReadyCallback {
     private Button editButton;
     private Button saveButton;
 
+    private ImageButton calendarButton;
+    private ImageButton timeButton;
+
     private ViewSwitcher eventView;
     private ViewSwitcher descView;
     private ViewSwitcher addressView;
@@ -65,6 +77,8 @@ public class EventPage extends Fragment implements OnMapReadyCallback {
     private Geocoder  g;
 
     private boolean isEdit = false;
+
+    final Calendar myCalendar = Calendar.getInstance();
 
     private final float defaultZoom = 15.0f;
 
@@ -90,6 +104,11 @@ public class EventPage extends Fragment implements OnMapReadyCallback {
         editAddress = v.findViewById(R.id.edit_address_info);
         editEventName = v.findViewById(R.id.edit_event_name_info);
         editEventDesc = v.findViewById(R.id.edit_event_description);
+
+        calendarButton = v.findViewById(R.id.calendar_button);
+        timeButton     = v.findViewById(R.id.time_button);
+
+        timeAndDateInit();
 
         editButton = v.findViewById(R.id.edit_button);
         editButton.setOnClickListener(new View.OnClickListener() {
@@ -118,6 +137,59 @@ public class EventPage extends Fragment implements OnMapReadyCallback {
         return v;
     }
 
+    private void timeAndDateInit() {
+        // https://stackoverflow.com/questions/14933330/datepicker-how-to-popup-datepicker-when-click-on-edittext
+        final DatePickerDialog.OnDateSetListener dateListener = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear,
+                                  int dayOfMonth) {
+                myCalendar.set(Calendar.YEAR, year);
+                myCalendar.set(Calendar.MONTH, monthOfYear);
+                myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+                myCalendar.set(Calendar.HOUR_OF_DAY, 0);
+                myCalendar.set(Calendar.MINUTE, 0);
+                myCalendar.set(Calendar.SECOND, 0);
+            }
+
+        };
+
+        final TimePickerDialog.OnTimeSetListener timeListener = new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker timePicker, int h, int m) {
+                myCalendar.set(Calendar.HOUR_OF_DAY, h);
+                myCalendar.set(Calendar.MINUTE, m);
+            }
+        };
+
+        calendarButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new DatePickerDialog(view.getContext(), dateListener, myCalendar
+                        .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                        myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+            }
+        });
+
+        timeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new TimePickerDialog(view.getContext(), timeListener, myCalendar
+                        .get(Calendar.HOUR_OF_DAY), myCalendar.get(Calendar.MINUTE),
+                        false).show();
+            }
+        });
+    }
+
+    private String createDate () {
+        DateFormat formatter = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss Z");
+        formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+        Log.d("searchCreateDate", formatter.format(myCalendar.getTime()));
+        return formatter.format(myCalendar.getTime());
+    }
+
+
     private void editEvent() {
         DocumentReference eventListing = Database.getInstance().db.collection("events")
                 .document(getArguments().getString("eventId"));
@@ -132,6 +204,8 @@ public class EventPage extends Fragment implements OnMapReadyCallback {
         if (geoLocation != null) {
             eventListing.update("geolocation", geoLocation);
         }
+
+        eventListing.update("date", createDate());
 
         address.setText(editAddress.getText());
         eventName.setText(editEventName.getText());
@@ -165,6 +239,18 @@ public class EventPage extends Fragment implements OnMapReadyCallback {
             buttonView.showNext();
 
         isEdit = !isEdit;
+
+        if (calendarButton.getVisibility() == View.GONE) {
+            calendarButton.setVisibility(View.VISIBLE);
+        } else {
+            calendarButton.setVisibility(View.GONE);
+        }
+
+        if (timeButton.getVisibility() == View.GONE) {
+            timeButton.setVisibility(View.VISIBLE);
+        } else {
+            timeButton.setVisibility(View.GONE);
+        }
     }
 
     public void findLocation(List<Address> addresses) {
