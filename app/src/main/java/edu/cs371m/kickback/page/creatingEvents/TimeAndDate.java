@@ -78,29 +78,4 @@ public class TimeAndDate extends Fragment {
 
         return formatter.format(cal.getTime());
     }
-
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        Log.d("onResume", "time and date resumed");
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        Log.d("onPause", "time and date paused");
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        Log.d("onStart", "time and date started");
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        Log.d("onStop", "time and date stopped");
-    }
 }

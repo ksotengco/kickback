@@ -46,8 +46,6 @@ public class MainActivity extends AppCompatActivity {
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
 
-//        GoogleApiAvailability.getInstance().makeGooglePlayServicesAvailable(this);
-
         userAuth = FirebaseAuth.getInstance();
 //        userAuth.signOut();
         FirebaseUser currentUser = userAuth.getCurrentUser();

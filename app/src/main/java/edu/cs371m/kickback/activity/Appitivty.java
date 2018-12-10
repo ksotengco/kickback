@@ -27,8 +27,11 @@ import edu.cs371m.kickback.model.Event;
 import edu.cs371m.kickback.model.Profile;
 import edu.cs371m.kickback.page.ProfilePage;
 import edu.cs371m.kickback.page.EventInvites;
+import edu.cs371m.kickback.page.creatingEvents.CreateEvent;
+import edu.cs371m.kickback.page.searching.SearchResults;
 import edu.cs371m.kickback.page.userEvents.EventPage;
 import edu.cs371m.kickback.page.HomePage;
+import edu.cs371m.kickback.page.userEvents.MyEvents;
 import edu.cs371m.kickback.service.Database;
 
 public class Appitivty extends AppCompatActivity implements OnAddEventListener {
@@ -102,6 +105,20 @@ public class Appitivty extends AppCompatActivity implements OnAddEventListener {
                         getSupportFragmentManager()
                                 .beginTransaction()
                                 .replace(R.id.app_fragment, new EventInvites())
+                                .commit();
+                        return true;
+                    case R.id.nav_create:
+                        Intent in = new Intent(getApplicationContext(), CreateEvent.class);
+                        startActivity(in);
+                        return true;
+                    case R.id.nav_events:
+                        getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.app_fragment, new MyEvents())
+                                .commit();
+                        return true;
+                    case R.id.nav_search:
+                        getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.app_fragment, new SearchResults())
                                 .commit();
                         return true;
                     case R.id.nav_profile:

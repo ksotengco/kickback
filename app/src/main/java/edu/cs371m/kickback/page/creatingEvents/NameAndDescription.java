@@ -47,28 +47,4 @@ public class NameAndDescription extends Fragment {
 
         return v;
     }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        Log.d("onResume", "name resumed");
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        Log.d("onPause", "name paused");
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        Log.d("onStart", "name started");
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        Log.d("onStop", "name stopped");
-    }
 }

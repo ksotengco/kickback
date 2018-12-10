@@ -127,7 +127,15 @@ public class ProfilePage extends Fragment {
         firstNameEdit.setText(userInfo.getString("firstName"));
         lastNameEdit.setText(userInfo.getString("lastName"));
         picUrlEdit.setText(userInfo.getString("picUrl"));
-        Glide.with(getContext()).load(userInfo.getString("picUrl")).into(editProfilePic);
+
+
+        if (userInfo.getString("picUrl") == null) {
+            Glide.with(getContext()).load(R.drawable.profile_pic_placeholder).into(editProfilePic);
+            picUrlEdit.setText(null);
+        } else {
+            Glide.with(getContext()).load(userInfo.getString("picUrl")).into(editProfilePic);
+            picUrlEdit.setText(userInfo.getString("picUrl"));
+        }
 
         applyPic.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -169,45 +177,48 @@ public class ProfilePage extends Fragment {
                 final String lastName = lastNameEdit.getText().toString();
                 final String picUrlString = picUrlEdit.getText().toString();
 
-
-               if (userInfo.getBoolean("newUser")){
-                    FirebaseAuth.getInstance()
-                            .createUserWithEmailAndPassword(userInfo.getString("email"), userInfo.getString("pass"))
-                            .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
-                                @Override
-                                public void onComplete(@NonNull Task<AuthResult> task) {
-                                    if (task.isSuccessful()) {
-                                        Bundle userInfo = new Bundle();
-                                        userInfo.putString("firstName", firstName);
-                                        userInfo.putString("lastName", lastName);
-                                        userInfo.putString("picUrl", picUrlString);
-                                        userInfo.putString("id", task.getResult().getUser().getUid());
-                                        userInfo.putString("email", task.getResult().getUser().getEmail());
-
-                                        ((MainActivity) getActivity()).startApptivity(userInfo);
-                                    }
-                                }
-                            });
+                if (firstName.equals("") || lastName.equals("")) {
+                    Toast.makeText(getContext(), "Please enter your first and last name.", Toast.LENGTH_SHORT).show();
                 } else {
-                    Map<String, Object> profileUpdates = new HashMap<>();
-                    profileUpdates.put("firstName", firstName);
-                    profileUpdates.put("lastName", lastName);
-                    profileUpdates.put("profilePicUrl", picUrlString);
-                    Database.getInstance().db.collection("profiles")
-                            .document(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                            .set(profileUpdates, SetOptions.merge()).addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            Bundle bundle = new Bundle();
-                            bundle.putString("firstName", firstName);
-                            bundle.putString("lastName", lastName);
-                            bundle.putString("picUrl", picUrlString);
-                            bundle.putString("email", FirebaseAuth.getInstance().getCurrentUser().getEmail());
-                            viewProfile(v, bundle, true);
-                        }
-                    });
-                }
+                    if (userInfo.getBoolean("newUser")){
+                        FirebaseAuth.getInstance()
+                                .createUserWithEmailAndPassword(userInfo.getString("email"), userInfo.getString("pass"))
+                                .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<AuthResult> task) {
+                                        if (task.isSuccessful()) {
 
+                                            Bundle userInfo = new Bundle();
+                                            userInfo.putString("firstName", firstName);
+                                            userInfo.putString("lastName", lastName);
+                                            userInfo.putString("picUrl", picUrlString);
+                                            userInfo.putString("id", task.getResult().getUser().getUid());
+                                            userInfo.putString("email", task.getResult().getUser().getEmail());
+
+                                            ((MainActivity) getActivity()).startApptivity(userInfo);
+                                        }
+                                    }
+                                });
+                    } else {
+                        Map<String, Object> profileUpdates = new HashMap<>();
+                        profileUpdates.put("firstName", firstName);
+                        profileUpdates.put("lastName", lastName);
+                        profileUpdates.put("profilePicUrl", picUrlString);
+                        Database.getInstance().db.collection("profiles")
+                                .document(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                .set(profileUpdates, SetOptions.merge()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Bundle bundle = new Bundle();
+                                bundle.putString("firstName", firstName);
+                                bundle.putString("lastName", lastName);
+                                bundle.putString("picUrl", picUrlString);
+                                bundle.putString("email", FirebaseAuth.getInstance().getCurrentUser().getEmail());
+                                viewProfile(v, bundle, true);
+                            }
+                        });
+                    }
+                }
             }
         });
 

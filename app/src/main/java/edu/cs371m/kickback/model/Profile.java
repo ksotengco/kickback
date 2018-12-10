@@ -69,5 +69,4 @@ public class Profile {
         this.active = active;
     }
 
-
 }

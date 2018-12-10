@@ -8,6 +8,8 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageButton;
 
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -42,6 +44,9 @@ public class CreateEvent extends AppCompatActivity implements OnButtonPressed, O
         setContentView(R.layout.create_event_main);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        toolbar.setTitle("");
+        ImageButton menu = findViewById(R.id.menuButton);
+        menu.setVisibility(View.INVISIBLE);
         setSupportActionBar(toolbar);
 
         createEvent = (CustomViewPager) findViewById(R.id.create_event_pager);
@@ -83,23 +88,6 @@ public class CreateEvent extends AppCompatActivity implements OnButtonPressed, O
         }
 
         finish();
-
-        /*Bundle eventInfo = new Bundle();
-        eventInfo.putString("host_name", event.getHostName());
-        eventInfo.putString("event_name", event.getEventName());
-        eventInfo.putString("event_desc", event.getDescription());
-
-        EventPage goToEvent = new EventPage();
-        goToEvent.setArguments(eventInfo);
-
-
-
-        getSupportFragmentManager().popBackStack();
-
-        getSupportFragmentManager().beginTransaction()
-                .addToBackStack(null)
-                .replace(R.id.app_fragment, goToEvent)
-                .commit();*/
     }
 
     @Override

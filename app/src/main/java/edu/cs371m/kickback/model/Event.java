@@ -15,8 +15,6 @@ public class Event {
     private String hostId;
     private String eventId;
     private String photoId;
-    // TODO: Add time/date and location
-    // TODO: ADd creation timestamp
 
     private String date;
     private ArrayList<String> location;
@@ -44,9 +42,6 @@ public class Event {
 
         this.geolocation = new GeoPoint(latitude, longitude);
 
-        /*this.latitude = eventInfo.getDouble("latitude");
-        this.longitude = eventInfo.getDouble("longitude");*/
-        //this.time = eventInfo.getIntegerArrayList("time");
 
         this.attendees = new ArrayList<String>();
         this.attendees.add(hostId);
@@ -96,22 +91,6 @@ public class Event {
     public GeoPoint getGeolocation() {
         return geolocation;
     }
-
-    /*public double getLatitude() {
-        return latitude;
-    }
-
-    public double getLongitude() {
-        return longitude;
-    }*/
-
-    /*public ArrayList<Integer> getDate() {
-        return date;
-    }
-
-    public ArrayList<Integer> getTime() {
-        return time;
-    }*/
 
     public String toString() {
         String result = "Name: " + getEventName();

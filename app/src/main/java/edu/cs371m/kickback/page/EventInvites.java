@@ -41,19 +41,6 @@ public class EventInvites extends Fragment {
         adapter.startListening();
         recyclerView.setAdapter(adapter);
 
-        // dbug
-//        Database.getInstance().db.collection("events").whereArrayContains("pending", FirebaseAuth.getInstance().getCurrentUser().getUid()).get()
-//                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-//                        if (task.isSuccessful()) {
-//                            Log.d("invites query", "onComplete: " + task.getResult().getDocuments().size());
-//                        }
-//                    }
-//                });
-
-        // set up adapter
-
         return v;
     }
 

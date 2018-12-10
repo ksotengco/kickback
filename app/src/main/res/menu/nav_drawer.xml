@@ -6,6 +6,27 @@
             android:icon="@drawable/common_google_signin_btn_icon_dark"
             android:checked="true"
             android:title="Home" />
+
+        <item
+            android:id="@+id/nav_create"
+            android:icon="@drawable/common_google_signin_btn_icon_dark"
+            android:title="Create Event" />
+
+        <item
+            android:id="@+id/nav_profile"
+            android:icon="@drawable/common_google_signin_btn_icon_dark"
+            android:title="Profile" />
+
+        <item
+            android:id="@+id/nav_search"
+            android:icon="@drawable/common_google_signin_btn_icon_dark"
+            android:title="Search" />
+
+        <item
+            android:id="@+id/nav_events"
+            android:icon="@drawable/common_google_signin_btn_icon_dark"
+            android:title="My Events" />
+
         <item
             android:id="@+id/nav_invites"
             android:icon="@drawable/common_google_signin_btn_icon_dark"
@@ -14,11 +35,5 @@
             android:id="@+id/nav_logout"
             android:icon="@drawable/common_google_signin_btn_icon_dark"
             android:title="Logout" />
-
-        <item
-            android:id="@+id/nav_profile"
-            android:icon="@drawable/common_google_signin_btn_icon_dark"
-            android:title="Profile" />
-
     </group>
 </menu>

@@ -113,7 +113,7 @@ public class LandingPage extends Fragment {
                         continueButton.setVisibility(View.VISIBLE);
                         progress.setVisibility(View.INVISIBLE);
                         Toast toast = Toast.makeText(getContext(), "ERROR: This account is signed in on another device. Please sign out on the other device and try again.", Toast.LENGTH_LONG);
-                        toast.setGravity(Gravity.CENTER, 0,0);
+                        toast.setGravity(Gravity.CENTER, 0, 0);
                         toast.show();
                         reloadProfiles = true;
                     } else {
@@ -132,26 +132,8 @@ public class LandingPage extends Fragment {
             }
         } else {
             Toast toast = Toast.makeText(getContext(), "Required:\nEmail must be valid format\nPassword min length is 6", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.CENTER, 0,0);
+            toast.setGravity(Gravity.CENTER, 0, 0);
             toast.show();
-        }
-    }
-
-    // WITCHEL Adapted from FC6
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == RC_SIGN_IN) {
-            IdpResponse response = IdpResponse.fromResultIntent(data);
-
-            if (resultCode == RESULT_OK) {
-                // Successfully signed in
-                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                if (user != null) {
-                    ((MainActivity)getActivity()).startApptivity(null);
-                }
-            }
         }
     }
 }
