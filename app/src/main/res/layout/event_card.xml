@@ -26,7 +26,8 @@
                 android:id="@+id/event_image"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:scaleType="fitXY"
+                android:background="@color/colorAccent"
+                android:scaleType="fitCenter"
                 android:src="@drawable/accept"
                 app:layout_constraintBottom_toTopOf="@+id/image_guideline"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -64,12 +65,24 @@
                 android:id="@+id/dateView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="21dp"
                 android:layout_marginEnd="16dp"
                 android:text="TextView"
                 android:textSize="18sp"
+                app:layout_constraintBottom_toTopOf="@+id/locationView"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/event_image" />
+
+            <TextView
+                android:id="@+id/locationView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:text="TextView"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/dateView"
+                app:layout_constraintTop_toBottomOf="@+id/dateView" />
 
         </android.support.constraint.ConstraintLayout>
     </android.support.v7.widget.CardView>

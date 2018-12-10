@@ -5,12 +5,15 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 
@@ -31,14 +34,20 @@ public class SearchFirestoreAdapter extends FirestoreRecyclerAdapter<Event, Sear
         TextView eventName;
         TextView hostName;
         TextView dateView;
+        TextView locationView;
+
+        ImageView photo;
 
         CardView cardView;
 
         public SearchViewHolder(View theView) {
             super(theView);
             eventName = theView.findViewById(R.id.eventName);
-            hostName = theView.findViewById(R.id.eventHost);
-            dateView = theView.findViewById(R.id.dateView);
+            hostName  = theView.findViewById(R.id.eventHost);
+            dateView  = theView.findViewById(R.id.dateView);
+            locationView = theView.findViewById(R.id.locationView);
+
+            photo     = theView.findViewById(R.id.event_image);
 
             cardView = theView.findViewById(R.id.event_card);
 
@@ -67,6 +76,11 @@ public class SearchFirestoreAdapter extends FirestoreRecyclerAdapter<Event, Sear
             Log.d("onBindViewHolder", e.getLocalizedMessage());
             holder.dateView.setText(model.getDate());
         }
+        holder.locationView.setText(model.getLocation().get(0));
+
+        if (!TextUtils.isEmpty(model.getPhotoId())) {
+            Glide.with(holder.cardView).load(model.getPhotoId()).into(holder.photo);
+        }
 
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,7 +93,6 @@ public class SearchFirestoreAdapter extends FirestoreRecyclerAdapter<Event, Sear
                         .addToBackStack(null)
                         .replace(R.id.app_fragment, goToEvent)
                         .commit();
-                //Toast.makeText(view.getContext(), event.getEventName(), Toast.LENGTH_SHORT).show();
             }
         });
     }

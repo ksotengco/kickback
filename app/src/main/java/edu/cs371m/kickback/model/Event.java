@@ -32,7 +32,7 @@ public class Event {
         this.hostId = eventInfo.getString("hostId");
         this.hostName = eventInfo.getString("hostName");
         this.eventId = UUID.randomUUID().toString();
-        this.photoId = null; // TODO: change this
+        this.photoId = eventInfo.getString("photoURL");
 
         this.date = eventInfo.getString("date");
         this.location = eventInfo.getStringArrayList("location");
@@ -41,7 +41,6 @@ public class Event {
         double longitude = eventInfo.getDoubleArray("geolocation")[1];
 
         this.geolocation = new GeoPoint(latitude, longitude);
-
 
         this.attendees = new ArrayList<String>();
         this.attendees.add(hostId);

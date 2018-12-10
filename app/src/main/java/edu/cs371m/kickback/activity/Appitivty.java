@@ -110,7 +110,7 @@ public class Appitivty extends AppCompatActivity implements OnAddEventListener {
                     case R.id.nav_create:
                         Intent in = new Intent(getApplicationContext(), CreateEvent.class);
                         startActivity(in);
-                        return true;
+                        return false;
                     case R.id.nav_events:
                         getSupportFragmentManager().beginTransaction()
                                 .replace(R.id.app_fragment, new MyEvents())

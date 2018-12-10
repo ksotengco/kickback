@@ -21,6 +21,7 @@ public class NameAndDescription extends Fragment {
 
     private EditText eventName;
     private EditText eventDesc;
+    private EditText photoURL;
 
     private Button nextButton;
 
@@ -32,6 +33,7 @@ public class NameAndDescription extends Fragment {
 
         eventName = (EditText) v.findViewById(R.id.editEventName);
         eventDesc = (EditText) v.findViewById(R.id.editDescription);
+        photoURL  = (EditText) v.findViewById(R.id.editPhotoURL);
 
         nextButton = (Button) v.findViewById(R.id.next_button);
 
@@ -39,7 +41,7 @@ public class NameAndDescription extends Fragment {
             @Override
             public void onClick(View view) {
                 if (!TextUtils.isEmpty(eventName.getText().toString()) && !TextUtils.isEmpty(eventDesc.getText().toString()))
-                    cb.OnNameDescSaved(eventName.getText().toString(), eventDesc.getText().toString());
+                    cb.OnNameDescSaved(eventName.getText().toString(), eventDesc.getText().toString(), photoURL.getText().toString());
                 else
                     Toast.makeText(view.getContext(), "Please enter in the required fields.", Toast.LENGTH_SHORT).show();
             }

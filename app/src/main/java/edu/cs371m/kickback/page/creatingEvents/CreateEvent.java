@@ -22,7 +22,7 @@ import edu.cs371m.kickback.model.Event;
 import edu.cs371m.kickback.service.Database;
 
 interface OnButtonPressed {
-    void OnNameDescSaved(String name, String desc);
+    void OnNameDescSaved(String name, String desc, String photoURL);
     void OnTimeDateSaved(String date);
     void OnLocationInviteSaved( ArrayList<String> location, double[] geolocation, ArrayList<String> pending);
     void prevPage();
@@ -91,9 +91,10 @@ public class CreateEvent extends AppCompatActivity implements OnButtonPressed, O
     }
 
     @Override
-    public void OnNameDescSaved(String name, String desc) {
+    public void OnNameDescSaved(String name, String desc, String photoURL) {
         eventInfo.putString("eventName", name);
         eventInfo.putString("description", desc);
+        eventInfo.putString("photoURL", photoURL);
 
         eventInfo.putString("hostId", FirebaseAuth.getInstance().getCurrentUser().getUid());
         eventInfo.putString("hostName", Appitivty.getCurrentProfile().getFirstName() + " " + Appitivty.getCurrentProfile().getLastName());
