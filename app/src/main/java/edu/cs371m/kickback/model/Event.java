@@ -2,6 +2,8 @@ package edu.cs371m.kickback.model;
 
 import android.os.Bundle;
 
+import com.google.firebase.firestore.GeoPoint;
+
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -19,8 +21,7 @@ public class Event {
     private String date;
     private ArrayList<String> location;
 
-    private double latitude;
-    private double longitude;
+    private GeoPoint geolocation;
 
     private ArrayList<String> attendees;
     private ArrayList<String> pending;
@@ -37,6 +38,11 @@ public class Event {
 
         this.date = eventInfo.getString("date");
         this.location = eventInfo.getStringArrayList("location");
+
+        double latitude = eventInfo.getDoubleArray("geolocation")[0];
+        double longitude = eventInfo.getDoubleArray("geolocation")[1];
+
+        this.geolocation = new GeoPoint(latitude, longitude);
 
         /*this.latitude = eventInfo.getDouble("latitude");
         this.longitude = eventInfo.getDouble("longitude");*/
@@ -87,7 +93,11 @@ public class Event {
         return location;
     }
 
-/*public double getLatitude() {
+    public GeoPoint getGeolocation() {
+        return geolocation;
+    }
+
+    /*public double getLatitude() {
         return latitude;
     }
 

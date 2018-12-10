@@ -25,6 +25,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.io.IOException;
@@ -54,10 +55,12 @@ public class LocationAndInvite extends Fragment implements OnMapReadyCallback {
 
     private Geocoder g;
 
+    private final double[] geoLocation = new double[2];
+
     private GoogleMap gmap;
     private MarkerOptions markerOptions;
 
-    private float defaultZoom = 15.0f;
+    private final float defaultZoom = 15.0f;
 
 
     // GoogleMaps code (some of it) taken from FC5
@@ -75,8 +78,6 @@ public class LocationAndInvite extends Fragment implements OnMapReadyCallback {
 
         markerOptions = new MarkerOptions();
 
-
-
         location = (EditText) v.findViewById(R.id.editLocation);
         invites  = (EditText) v.findViewById(R.id.editInvites);
 
@@ -85,6 +86,13 @@ public class LocationAndInvite extends Fragment implements OnMapReadyCallback {
 
         createButton     = (Button) v.findViewById(R.id.create_button);
         prevButton     = (Button) v.findViewById(R.id.prev_button);
+
+        prevButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                cb.prevPage();
+            }
+        });
 
         inviteButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -126,6 +134,9 @@ public class LocationAndInvite extends Fragment implements OnMapReadyCallback {
                     findLocation(addresses);
 
                     if (gmap != null && addresses.size() != 0) {
+                        geoLocation[0] = addresses.get(0).getLatitude();
+                        geoLocation[1] = addresses.get(0).getLongitude();
+
                         LatLng pos = new LatLng(addresses.get(0).getLatitude(), addresses.get(0).getLongitude());
                         gmap.clear();
                         gmap.addMarker(markerOptions.position(pos));
@@ -144,7 +155,7 @@ public class LocationAndInvite extends Fragment implements OnMapReadyCallback {
             @Override
             public void onClick(View view) {
                 if (!locationArr.isEmpty())
-                    cb.OnLocationInviteSaved(locationArr, pending);
+                    cb.OnLocationInviteSaved(locationArr, geoLocation, pending);
                 else
                     Toast.makeText(getContext(), "Please enter a valid location.", Toast.LENGTH_SHORT).show();
             }
@@ -185,6 +196,10 @@ public class LocationAndInvite extends Fragment implements OnMapReadyCallback {
                 try {
                     List<Address> addresses = g.getFromLocation(latLng.latitude, latLng.longitude, 5);
                     findLocation(addresses);
+
+                    geoLocation[0] = latLng.latitude;
+                    geoLocation[1] = latLng.longitude;
+
                 } catch (IOException e) {
                     Log.d("onMapClick", e.getLocalizedMessage());
                     Toast.makeText(getContext(), "Please enter a valid location.", Toast.LENGTH_SHORT).show();

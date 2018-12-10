@@ -27,7 +27,7 @@ import edu.cs371m.kickback.model.Event;
 import edu.cs371m.kickback.model.Profile;
 import edu.cs371m.kickback.page.ProfilePage;
 import edu.cs371m.kickback.page.EventInvites;
-import edu.cs371m.kickback.page.EventPage;
+import edu.cs371m.kickback.page.userEvents.EventPage;
 import edu.cs371m.kickback.page.HomePage;
 import edu.cs371m.kickback.service.Database;
 

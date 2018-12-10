@@ -43,6 +43,13 @@ public class TimeAndDate extends Fragment {
         nextButton = (Button) v.findViewById(R.id.next_button);
         prevButton = (Button) v.findViewById(R.id.prev_button);
 
+        prevButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                cb.prevPage();
+            }
+        });
+
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

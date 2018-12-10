@@ -2,10 +2,11 @@ package edu.cs371m.kickback.page.creatingEvents;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -16,17 +17,17 @@ import edu.cs371m.kickback.R;
 import edu.cs371m.kickback.activity.Appitivty;
 import edu.cs371m.kickback.listener.OnAddEventListener;
 import edu.cs371m.kickback.model.Event;
-import edu.cs371m.kickback.page.EventPage;
 import edu.cs371m.kickback.service.Database;
 
 interface OnButtonPressed {
     void OnNameDescSaved(String name, String desc);
     void OnTimeDateSaved(String date);
-    void OnLocationInviteSaved( ArrayList<String> location, ArrayList<String> pending);
+    void OnLocationInviteSaved( ArrayList<String> location, double[] geolocation, ArrayList<String> pending);
+    void prevPage();
 }
 
 // https://developer.android.com/training/animation/screen-slide
-public class CreateEvent extends FragmentActivity implements OnButtonPressed, OnAddEventListener {
+public class CreateEvent extends AppCompatActivity implements OnButtonPressed, OnAddEventListener {
 
     private static final int PAGES = 3;
 
@@ -39,6 +40,10 @@ public class CreateEvent extends FragmentActivity implements OnButtonPressed, On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.create_event_main);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        setSupportActionBar(toolbar);
+
         createEvent = (CustomViewPager) findViewById(R.id.create_event_pager);
         pagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
         createEvent.setAdapter(pagerAdapter);
@@ -48,7 +53,16 @@ public class CreateEvent extends FragmentActivity implements OnButtonPressed, On
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        if (createEvent.getCurrentItem() != 0) {
+            createEvent.setCurrentItem(createEvent.getCurrentItem() - 1);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public void prevPage() {
+        onBackPressed();
     }
 
     public void nextPage() {
@@ -107,8 +121,9 @@ public class CreateEvent extends FragmentActivity implements OnButtonPressed, On
     }
 
     @Override
-    public void OnLocationInviteSaved(ArrayList<String> location,  ArrayList<String> pending) {
+    public void OnLocationInviteSaved(ArrayList<String> location, double[] geolocation, ArrayList<String> pending) {
         eventInfo.putStringArrayList("location", location);
+        eventInfo.putDoubleArray("geolocation", geolocation);
         eventInfo.putStringArrayList("pending", pending);
 
         saveEvent();
