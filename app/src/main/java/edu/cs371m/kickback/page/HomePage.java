@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,11 +45,13 @@ public class HomePage extends Fragment {
     private RecyclerView recyclerView;
     private SearchFirestoreAdapter adapter;
 
+    private final FirestoreRecyclerOptions.Builder<Event> builder = new FirestoreRecyclerOptions.Builder<Event>();
+
+    private ProgressBar progressBar;
+
     private LocationManager mLocationManager;
 
-    private GeoPoint g;
-
-    private final double DISTANCE = 50.0;
+    private final double DISTANCE = 10.0;
 
     // https://stackoverflow.com/questions/17591147/how-to-get-current-location-in-android
     // https://stackoverflow.com/questions/50673639/firestore-possible-geoquery-workaround
@@ -70,13 +73,14 @@ public class HomePage extends Fragment {
                         .whereGreaterThanOrEqualTo("geolocation", lowGeo)
                         .whereLessThanOrEqualTo("geolocation", upperGeo);
 
-                FirestoreRecyclerOptions<Event> options = new FirestoreRecyclerOptions.Builder<Event>()
-                        .setQuery(q, Event.class)
+                FirestoreRecyclerOptions<Event> options = builder.setQuery(q, Event.class)
                         .build();
 
                 if (adapter != null) {
                     adapter.stopListening();
                 }
+
+                progressBar.setVisibility(View.GONE);
 
                 adapter = new SearchFirestoreAdapter(options);
                 adapter.startListening();
@@ -110,13 +114,15 @@ public class HomePage extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.home_page, container, false);
 
+        progressBar = v.findViewById(R.id.progressBar);
+
         getActivity().requestPermissions(new String[] {
                 Manifest.permission.ACCESS_FINE_LOCATION}, 1);
 
         mLocationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
 
         try {
-            mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000,
+            mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000,
                     10, mLocationListener);
         } catch (SecurityException e) {
             Log.d("HomePage", e.getLocalizedMessage());
@@ -127,6 +133,14 @@ public class HomePage extends Fragment {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
 
         return v;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (adapter != null) {
+            adapter.startListening();
+        }
     }
 
     @Override
