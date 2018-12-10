@@ -23,6 +23,7 @@ interface OnButtonPressed {
     void OnNameDescSaved(String name, String desc);
     void OnTimeDateSaved(String date);
     void OnLocationInviteSaved( ArrayList<String> location, double[] geolocation, ArrayList<String> pending);
+    void prevPage();
 }
 
 // https://developer.android.com/training/animation/screen-slide
@@ -52,7 +53,16 @@ public class CreateEvent extends AppCompatActivity implements OnButtonPressed, O
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        if (createEvent.getCurrentItem() != 0) {
+            createEvent.setCurrentItem(createEvent.getCurrentItem() - 1);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public void prevPage() {
+        onBackPressed();
     }
 
     public void nextPage() {

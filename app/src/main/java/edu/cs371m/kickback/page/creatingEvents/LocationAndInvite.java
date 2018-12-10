@@ -87,6 +87,13 @@ public class LocationAndInvite extends Fragment implements OnMapReadyCallback {
         createButton     = (Button) v.findViewById(R.id.create_button);
         prevButton     = (Button) v.findViewById(R.id.prev_button);
 
+        prevButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                cb.prevPage();
+            }
+        });
+
         inviteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
