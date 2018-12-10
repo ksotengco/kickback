@@ -9,8 +9,12 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageButton;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -21,12 +25,13 @@ import edu.cs371m.kickback.listener.OnGetProfileListener;
 import edu.cs371m.kickback.listener.OnProfileSignOut;
 import edu.cs371m.kickback.model.Event;
 import edu.cs371m.kickback.model.Profile;
+import edu.cs371m.kickback.page.ProfilePage;
 import edu.cs371m.kickback.page.EventInvites;
 import edu.cs371m.kickback.page.userEvents.EventPage;
 import edu.cs371m.kickback.page.HomePage;
 import edu.cs371m.kickback.service.Database;
 
-public class Appitivty extends AppCompatActivity implements OnAddEventListener, OnGetProfileListener, OnAddProfileListener {
+public class Appitivty extends AppCompatActivity implements OnAddEventListener {
 
     private DrawerLayout drawerLayout;
     private NavigationView mainNav;
@@ -38,6 +43,9 @@ public class Appitivty extends AppCompatActivity implements OnAddEventListener, 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.apptivity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        ImageButton menu = findViewById(R.id.menuButton);
+        menu.setVisibility(View.VISIBLE);
+        toolbar.setTitle("");
         setSupportActionBar(toolbar);
 
         drawerLayout = findViewById(R.id.drawerLayout);
@@ -51,14 +59,33 @@ public class Appitivty extends AppCompatActivity implements OnAddEventListener, 
                     userInfo.getString("id"),
                     userInfo.getString("email"),
                     userInfo.getString("firstName"),
-                    userInfo.getString("lastName"));
+                    userInfo.getString("lastName"),
+                    userInfo.getString("picUrl"));
 
             newProfile.setActive(true);
 
-            Database.getInstance().addProfile(newProfile, this);
+            Database.getInstance().addProfile(newProfile, new OnAddProfileListener() {
+                @Override
+                public void onAddProfile(Profile newProfile) {
+                    signInComplete(newProfile);
+                }
+            });
         } else {
-            Database.getInstance().signInProfile(FirebaseAuth.getInstance().getCurrentUser().getUid(), this);
+            Database.getInstance().signInProfile(FirebaseAuth.getInstance().getCurrentUser().getUid(), new OnGetProfileListener() {
+                @Override
+                public void onGetProfile(Profile profile) {
+                    signInComplete(profile);
+                }
+            });
         }
+
+        menu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                drawerLayout.openDrawer(Gravity.LEFT);
+            }
+        });
+
 
         mainNav.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -75,6 +102,16 @@ public class Appitivty extends AppCompatActivity implements OnAddEventListener, 
                         getSupportFragmentManager()
                                 .beginTransaction()
                                 .replace(R.id.app_fragment, new EventInvites())
+                                .commit();
+                        return true;
+                    case R.id.nav_profile:
+                        Bundle userInfo = getCurrentProfile().bundleData();
+                        ProfilePage editProfile = new ProfilePage();
+                        userInfo.putBoolean("newUser", false);
+                        editProfile.setArguments(userInfo);
+                        getSupportFragmentManager()
+                                .beginTransaction()
+                                .replace(R.id.app_fragment, editProfile)
                                 .commit();
                         return true;
                     case R.id.nav_logout:
@@ -101,17 +138,7 @@ public class Appitivty extends AppCompatActivity implements OnAddEventListener, 
         return currentProfile;
     }
 
-    @Override
-    public void onAddProfile(Profile profile) {
-        currentProfile = profile;
-
-        getSupportFragmentManager().beginTransaction()
-                .add(R.id.app_fragment, new HomePage(), "HOME_PAGE")
-                .commit();
-    }
-
-    @Override
-    public void onGetProfile(Profile profile) {
+    public void signInComplete(final Profile profile) {
         currentProfile = profile;
 
         getSupportFragmentManager().beginTransaction()

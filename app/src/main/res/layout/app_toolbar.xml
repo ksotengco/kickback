@@ -11,15 +11,21 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/logo_name"
-        android:layout_gravity="center"/>
+        android:layout_gravity="center"
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
+        android:src="@drawable/logo_name" />
 
     <ImageButton
         android:id="@+id/menuButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_menu_black_24dp"
+        android:layout_gravity="center_vertical"
+        android:adjustViewBounds="false"
         android:backgroundTint="@color/colorPrimary"
-        android:layout_gravity="center_vertical"/>
+        android:cropToPadding="false"
+        android:scaleType="fitXY"
+        android:src="@drawable/ic_menu_black_24dp"
+        android:visibility="visible" />
 
 </android.support.v7.widget.Toolbar>

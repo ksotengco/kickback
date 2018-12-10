@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -14,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.IdpResponse;
@@ -98,15 +96,16 @@ public class LandingPage extends Fragment {
                 Profile profile = emailMap.getOrDefault(emailValue, null);
                 if (profile == null) {
                     // sign up
-                    SignUp signUp = new SignUp();
+                    ProfilePage signUp = new ProfilePage();
                     Bundle userInfo = new Bundle();
                     userInfo.putString("email", emailValue);
                     userInfo.putString("pass", passValue);
+                    userInfo.putBoolean("newUser", true);
                     signUp.setArguments(userInfo);
                     getActivity().getSupportFragmentManager()
                             .beginTransaction()
                             .addToBackStack(null)
-                            .replace(R.id.main_fragment, new SignUp())
+                            .replace(R.id.main_fragment, signUp)
                             .commit();
                 } else {
                     // sign in

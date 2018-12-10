@@ -104,16 +104,16 @@ public class LocationAndInvite extends Fragment implements OnMapReadyCallback {
                             .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                                 @Override
                                 public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                                    String id = queryDocumentSnapshots.toObjects(Profile.class).get(0).getId();
-                                    pending.add(id);
-                                    Toast.makeText(getActivity(), "User found, add successful. ID added: " + id, Toast.LENGTH_SHORT).show();
+                                    ArrayList<Profile> profiles = (ArrayList<Profile>)queryDocumentSnapshots.toObjects(Profile.class);
+                                    if (profiles.size() == 0) {
+                                        Toast.makeText(getActivity(), "User not found", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        String id = queryDocumentSnapshots.toObjects(Profile.class).get(0).getId();
+                                        pending.add(id);
+                                        Toast.makeText(getActivity(), "User found, add successful. ID added: " + id, Toast.LENGTH_SHORT).show();
+                                    }
                                 }
-                            }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(getActivity(), "User not found", Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                            });
                 } else {
                     Toast.makeText(getActivity(), "You can't invite yourself to your own party, dumbass.", Toast.LENGTH_SHORT).show();
                 }
@@ -133,10 +133,10 @@ public class LocationAndInvite extends Fragment implements OnMapReadyCallback {
 
                     findLocation(addresses);
 
-                    geoLocation[0] = addresses.get(0).getLatitude();
-                    geoLocation[1] = addresses.get(0).getLongitude();
+                    if (gmap != null && addresses.size() != 0) {
+                        geoLocation[0] = addresses.get(0).getLatitude();
+                        geoLocation[1] = addresses.get(0).getLongitude();
 
-                    if (gmap != null) {
                         LatLng pos = new LatLng(addresses.get(0).getLatitude(), addresses.get(0).getLongitude());
                         gmap.clear();
                         gmap.addMarker(markerOptions.position(pos));

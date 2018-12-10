@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/editProfile"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/editTitle"
+        android:layout_width="411dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:fontFamily="monospace"
+        android:paddingLeft="8dp"
+        android:paddingBottom="8dp"
+        android:text="Edit Profile"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:typeface="monospace"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/saveButton"
+        style="@style/FirebaseUI.Button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:fontFamily="monospace"
+        android:text="Save"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.71"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:id="@+id/firstNameEdit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:ems="10"
+        android:hint="First Name"
+        android:inputType="textPersonName"
+        android:singleLine="true"
+        android:typeface="monospace"
+        app:layout_constraintBottom_toTopOf="@+id/lastNameEdit"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/picUrlEdit" />
+
+    <EditText
+        android:id="@+id/picUrlEdit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Picture Url"
+        android:inputType="textPersonName"
+        android:singleLine="true"
+        android:typeface="monospace"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@+id/firstNameEdit"
+        app:layout_constraintEnd_toStartOf="@+id/applyButton"
+        app:layout_constraintHorizontal_bias="0.13"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editProfilePic" />
+
+    <ImageView
+        android:id="@+id/editProfilePic"
+        android:layout_width="206dp"
+        android:layout_height="238dp"
+        android:scaleType="fitXY"
+        app:layout_constraintBottom_toTopOf="@+id/picUrlEdit"
+        app:layout_constraintEnd_toEndOf="@+id/firstNameEdit"
+        app:layout_constraintStart_toStartOf="@+id/firstNameEdit"
+        app:layout_constraintTop_toBottomOf="@+id/editTitle"
+        app:srcCompat="@drawable/profile_pic_placeholder" />
+
+    <EditText
+        android:id="@+id/lastNameEdit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:ems="10"
+        android:hint="Last Name"
+        android:inputType="textPersonName"
+        android:typeface="monospace"
+        app:layout_constraintBottom_toTopOf="@+id/saveButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/firstNameEdit" />
+
+    <Button
+        android:id="@+id/applyButton"
+        style="@style/FirebaseUI.Button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="monospace"
+        android:text="Apply"
+        android:typeface="monospace"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@+id/picUrlEdit"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/picUrlEdit"
+        app:layout_constraintTop_toTopOf="@+id/picUrlEdit"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <Button
+        android:id="@+id/revertButton"
+        style="@style/FirebaseUI.Button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="monospace"
+        android:text="Revert"
+        android:typeface="monospace"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@+id/picUrlEdit"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.9"
+        app:layout_constraintStart_toEndOf="@+id/picUrlEdit"
+        app:layout_constraintTop_toTopOf="@+id/picUrlEdit"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <Button
+        android:id="@+id/cancelPicEdit"
+        style="@style/FirebaseUI.Button"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="8dp"
+        android:fontFamily="monospace"
+        android:text="X"
+        android:typeface="monospace"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/applyButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/applyButton"
+        app:layout_constraintTop_toTopOf="@+id/applyButton" />
+
+</android.support.constraint.ConstraintLayout>

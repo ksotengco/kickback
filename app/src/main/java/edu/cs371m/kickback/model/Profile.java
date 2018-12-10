@@ -19,23 +19,27 @@ public class Profile {
     private String lastName;
     private String id;
     private String email;
+    private String profilePicUrl;
     private boolean active;
-
-    private Photo profilePicture;
-
-    private int totalRating;
-    private int reviewCount;
 
     public Profile() {}
 
-    public Profile(String id, String email, String firstName, String lastName) {
+    public Profile(String id, String email, String firstName, String lastName, String profilePicUrl) {
         this.id = id;
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.profilePicUrl = profilePicUrl;
+    }
 
-        totalRating = 0;
-        reviewCount = 0;
+    public Bundle bundleData() {
+        Bundle userInfo = new Bundle();
+        userInfo.putString("id", id);
+        userInfo.putString("firstName", firstName);
+        userInfo.putString("lastName", lastName);
+        userInfo.putString("email", email);
+        userInfo.putString("picUrl", profilePicUrl);
+        return userInfo;
     }
 
     // all the getters for database population (I assume)
@@ -53,6 +57,10 @@ public class Profile {
         return email;
     }
 
+    public String getProfilePicUrl() {
+        return profilePicUrl;
+    }
+
     public boolean isActive() {
         return active;
     }
@@ -61,14 +69,5 @@ public class Profile {
         this.active = active;
     }
 
-    public Photo getProfilePicture() {
-        return profilePicture;
-    }
 
-    public int getTotalRating() {
-        return totalRating;
-    }
-    public int getReviewCount() {
-        return reviewCount;
-    }
 }
