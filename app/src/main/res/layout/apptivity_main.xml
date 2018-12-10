@@ -6,15 +6,30 @@
     android:id="@+id/drawerLayout"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <FrameLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/app_fragment"
-        xmlns:android="http://schemas.android.com/apk/res/android">
+        android:orientation="vertical">
+
         <include
             android:id="@+id/my_toolbar"
             layout="@layout/app_toolbar"></include>
-    </FrameLayout>
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/app_fragment"
+                xmlns:android="http://schemas.android.com/apk/res/android">
+
+            </FrameLayout>
+        </ScrollView>
+
+
+    </LinearLayout>
+
+
 
     <!-- Container for contents of drawer - use NavigationView to make configuration easier -->
     <android.support.design.widget.NavigationView

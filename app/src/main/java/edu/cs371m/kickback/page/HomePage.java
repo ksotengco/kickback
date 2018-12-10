@@ -1,18 +1,25 @@
 package edu.cs371m.kickback.page;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.bumptech.glide.Glide;
 
 import edu.cs371m.kickback.R;
 import edu.cs371m.kickback.activity.Appitivty;
+import edu.cs371m.kickback.activity.MainActivity;
 import edu.cs371m.kickback.page.creatingEvents.CreateEvent;
 import edu.cs371m.kickback.page.searching.SearchResults;
 
@@ -43,10 +50,6 @@ public class HomePage extends Fragment {
             public void onClick(View view) {
                 Intent in = new Intent(getContext(), CreateEvent.class);
                 getActivity().startActivity(in);
-                /* getActivity().getSupportFragmentManager().beginTransaction()
-                        .addToBackStack(null)
-                        .replace(R.id.app_fragment, new CreateEvent())
-                        .commit();*/
             }
         });
 

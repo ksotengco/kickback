@@ -8,7 +8,8 @@
     </style>
 
     <style name="MyDatePickerTheme" parent="AppTheme">
-        <item name="colorAccent">@color/fui_bgTwitter</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:fontFamily">monospace</item>
     </style>
 
 </resources>

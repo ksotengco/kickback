@@ -24,7 +24,6 @@ public class Event {
 
     private ArrayList<String> attendees;
     private ArrayList<String> pending;
-    private ArrayList<String> comments;
 
     public Event() {}
 
@@ -50,10 +49,6 @@ public class Event {
 
     public ArrayList<String> getAttendees() {
         return attendees;
-    }
-
-    public ArrayList<String> getComments() {
-        return comments;
     }
 
     public ArrayList<String> getPending() {
