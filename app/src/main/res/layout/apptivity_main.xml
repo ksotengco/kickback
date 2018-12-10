@@ -14,9 +14,6 @@
         <include
             android:id="@+id/my_toolbar"
             layout="@layout/app_toolbar"></include>
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -24,7 +21,6 @@
                 xmlns:android="http://schemas.android.com/apk/res/android">
 
             </FrameLayout>
-        </ScrollView>
 
 
     </LinearLayout>
