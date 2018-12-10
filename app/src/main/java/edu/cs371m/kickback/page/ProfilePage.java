@@ -32,13 +32,16 @@ import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import edu.cs371m.kickback.R;
+import edu.cs371m.kickback.activity.Appitivty;
 import edu.cs371m.kickback.activity.MainActivity;
+import edu.cs371m.kickback.model.Event;
 import edu.cs371m.kickback.service.Database;
 
 public class ProfilePage extends Fragment {
@@ -210,6 +213,25 @@ public class ProfilePage extends Fragment {
                             @Override
                             public void onSuccess(Void aVoid) {
                                 Bundle bundle = new Bundle();
+
+                                Appitivty.getCurrentProfile().setFirstName(firstName);
+                                Appitivty.getCurrentProfile().setLastName(lastName);
+                                Appitivty.getCurrentProfile().setProfilePicUrl(picUrlString);
+
+                                Database.getInstance().db.collection("events")
+                                        .whereEqualTo("hostId", FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                        .get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                        @Override
+                                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+
+                                            for (Event e : queryDocumentSnapshots.toObjects(Event.class) ) {
+                                                Database.getInstance().db.collection("events")
+                                                        .document(e.getEventId())
+                                                        .update("hostName", firstName + " " + lastName);
+                                            }
+                                        }
+                                });
+
                                 bundle.putString("firstName", firstName);
                                 bundle.putString("lastName", lastName);
                                 bundle.putString("picUrl", picUrlString);
