@@ -135,8 +135,8 @@ public class EventPage extends Fragment implements OnMapReadyCallback {
             editButton.setVisibility(View.VISIBLE);
             editButton.setClickable(true);
 
-            saveButton.setVisibility(View.VISIBLE);
-            editButton.setClickable(true);
+            saveButton.setVisibility(View.GONE);
+            saveButton.setClickable(true);
         }
 
         initText();

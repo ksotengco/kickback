@@ -25,8 +25,19 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.Query;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.TimeZone;
 
 import edu.cs371m.kickback.R;
 import edu.cs371m.kickback.activity.Appitivty;
@@ -47,66 +58,12 @@ public class HomePage extends Fragment {
 
     private ProgressBar progressBar;
 
-    private LocationManager mLocationManager;
+    private FusedLocationProviderClient mFusedLocationClient;
+
+    private LocationRequest mLocationRequest;
+    private LocationCallback mLocationCallback;
 
     private final double DISTANCE = 10.0;
-
-    // https://stackoverflow.com/questions/17591147/how-to-get-current-location-in-android
-    // https://stackoverflow.com/questions/50673639/firestore-possible-geoquery-workaround
-    private final LocationListener mLocationListener = new LocationListener() {
-        @Override
-        public void onLocationChanged(final Location location) {
-            try {
-                Log.d("onLocationChanged", location.getLatitude() + " " + location.getLongitude());
-                double lowerLat = location.getLatitude() - (0.0144927536231884 * DISTANCE);
-                double lowerLng = location.getLongitude() - (0.0181818181818182 * DISTANCE);
-
-                double upperLat = location.getLatitude() + (0.0144927536231884 * DISTANCE);
-                double upperLng = location.getLongitude() + (0.0181818181818182 * DISTANCE);
-
-                GeoPoint lowGeo   = new GeoPoint(lowerLat, lowerLng);
-                GeoPoint upperGeo = new GeoPoint(upperLat, upperLng);
-
-                Query q = Database.getInstance().db.collection("events")
-                        .whereGreaterThanOrEqualTo("geolocation", lowGeo)
-                        .whereLessThanOrEqualTo("geolocation", upperGeo);
-
-                FirestoreRecyclerOptions<Event> options = new FirestoreRecyclerOptions.Builder<Event>()
-                        .setQuery(q, Event.class)
-                        .build();
-
-                if (adapter != null) {
-                    adapter.stopListening();
-                }
-
-                progressBar.setVisibility(View.GONE);
-
-                adapter = new SearchFirestoreAdapter(options);
-                adapter.startListening();
-                recyclerView.setAdapter(adapter);
-                recyclerView.setNestedScrollingEnabled(false);
-
-
-            } catch (SecurityException e) {
-                Log.d("onLocationChanged", e.getLocalizedMessage());
-            }
-        }
-
-        @Override
-        public void onStatusChanged(String s, int i, Bundle bundle) {
-
-        }
-
-        @Override
-        public void onProviderDisabled(String s) {
-
-        }
-
-        @Override
-        public void onProviderEnabled(String s) {
-
-        }
-    };
 
     @Nullable
     @Override
@@ -118,11 +75,23 @@ public class HomePage extends Fragment {
         getActivity().requestPermissions(new String[] {
                 Manifest.permission.ACCESS_FINE_LOCATION}, 1);
 
-        mLocationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
+
+        mLocationRequest = LocationRequest.create();
+
+        mLocationCallback = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                if (locationResult != null) {
+                    queryLocation(locationResult.getLastLocation());
+                } else {
+                    Log.d("getLastLocation", "Location is null.");
+                }
+            }
+        };
 
         try {
-            mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000,
-                    10, mLocationListener);
+            mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, null);
         } catch (SecurityException e) {
             Log.d("HomePage", e.getLocalizedMessage());
         }
@@ -132,6 +101,43 @@ public class HomePage extends Fragment {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
 
         return v;
+    }
+
+    private void queryLocation(Location location) {
+        try {
+            Log.d("onLocationChanged", location.getLatitude() + " " + location.getLongitude());
+            double lowerLat = location.getLatitude() - (0.0144927536231884 * DISTANCE);
+            double lowerLng = location.getLongitude() - (0.0181818181818182 * DISTANCE);
+
+            double upperLat = location.getLatitude() + (0.0144927536231884 * DISTANCE);
+            double upperLng = location.getLongitude() + (0.0181818181818182 * DISTANCE);
+
+            GeoPoint lowGeo   = new GeoPoint(lowerLat, lowerLng);
+            GeoPoint upperGeo = new GeoPoint(upperLat, upperLng);
+
+            Query q = Database.getInstance().db.collection("events")
+                    .whereGreaterThanOrEqualTo("geolocation", lowGeo)
+                    .whereLessThanOrEqualTo("geolocation", upperGeo);
+
+            FirestoreRecyclerOptions<Event> options = new FirestoreRecyclerOptions.Builder<Event>()
+                    .setQuery(q, Event.class)
+                    .build();
+
+            if (adapter != null) {
+                adapter.stopListening();
+            }
+
+            progressBar.setVisibility(View.GONE);
+
+            adapter = new SearchFirestoreAdapter(options);
+            adapter.startListening();
+            recyclerView.setAdapter(adapter);
+            recyclerView.setNestedScrollingEnabled(false);
+
+
+        } catch (SecurityException e) {
+            Log.d("onLocationChanged", e.getLocalizedMessage());
+        }
     }
 
     @Override
